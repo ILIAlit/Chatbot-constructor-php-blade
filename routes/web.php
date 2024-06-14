@@ -4,6 +4,7 @@ use App\Http\Controllers\BotController;
 use App\Http\Controllers\BotManController;
 use App\Http\Controllers\ChainController;
 use App\Http\Controllers\LogController;
+use App\Http\Controllers\StateController;
 use App\Http\Controllers\TriggerController;
 use App\Models\BotModel;
 use App\Models\TBotModel;
@@ -41,3 +42,5 @@ Route::delete('/bot/delete-bot/{id}', [BotController::class, 'deleteBot'])->name
 
 Route::get('/bot/disable/{botId}', [BotController::class, 'isDisabled'])->name('bot-disable');
 Route::get('/bot/not-disable/{botId}', [BotController::class, 'notDisabled'])->name('bot-not-disable');
+
+Route::get('/state-user-create', [StateController::class, 'getUsersCreateStatistics'])->name('state-user-create');

@@ -2,6 +2,10 @@
 <html lang="en">
 
 <style>
+#main {
+	width: 70%;
+}
+
 body {
 	max-width: 100%;
 }
@@ -140,6 +144,12 @@ body {
 									</a>
 								</li>
 							</ul>
+						</li>
+						<li>
+							<a href="/state-user-create" class="nav-link px-0 align-middle ">
+								<i class="fs-4 bi-bootstrap"></i> <span
+									class="ms-1 h5 d-none d-sm-inline">Статистика</span>
+							</a>
 						</li>
 					</ul>
 				</div>
