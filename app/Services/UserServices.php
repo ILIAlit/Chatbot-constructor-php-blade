@@ -68,7 +68,8 @@ class UserServices {
 				if(!$stage) {
 					continue;
 				}
-				$this->telegramService->sendMessage($bot->token, $user->tg_chat_id, $stage->text);
+				$this->telegramService->sendMessage($bot->token, $user->tg_chat_id, '222');
+				$this->telegramService->sendPhoto($bot->token, $user->tg_chat_id,$stage->file_src, $stage->text);
 				$nextStage = $this->chainService->getChainStageByOrder($chain->id, $user->stage + 1);
 				if(!$nextStage) {
 					$this->updateUser($timeNow,-1, $user->id);

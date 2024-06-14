@@ -68,6 +68,7 @@ class Handler extends WebhookHandler {
         $chain = $this->botServices->getBotChain($botId);
         if(!$chain) {
             $bot = $this->botServices->getBotById($botId);
+
             $this->telegramServices->sendMessage($bot->token, $chatId, 'Бот в разработке!');
             return null;
         }

@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\StageModel;
 use App\Models\StageTimeModel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use ResponsePause;
 
 enum DateDispatch: String {
@@ -15,22 +16,23 @@ class StageServices {
 
 	private TimeServices $timeService;
 
-	public function __construct(TimeServices $timeService) {
+	private FileServices $fileService;
+
+	public function __construct(TimeServices $timeService, FileServices $fileService) {
         $this->timeService = $timeService;
+		$this->fileService = $fileService;
     }
 
 	public function createStage($stage) {
-		if(isset($stage->dateDispatch)) {
-			return $this->createTimeStage($stage->text, $stage->order, $stage->hour, $stage->minute, $stage->dateDispatch);
-		}
-		if(isset($stage->pause)) {
-			return $this->createPauseStage($stage->text, $stage->order, $stage->pause);
+		if(isset($stage['dateDispatch'])) {
+			return $this->createTimeStage($stage['text'], $stage['order'], $stage['hour'], $stage['minute'], $stage['dateDispatch'], $stage['file']);
+		} else {
+			return $this->createPauseStage($stage['text'], $stage['order'], $stage['hour'], $stage['minute'], $stage['second']);
 		}
 	}
 	
-	public function createPauseStage(string $textValue, string $orderValue,  $pauseValue) {
-
-		$transformPause = $this->timeService->transformToSeconds((int)$pauseValue->hour, (int)$pauseValue->minute, (int)$pauseValue->second);
+	public function createPauseStage(string $textValue, string $orderValue,  $hour = 0, $minute = 0, $second = 0) {
+		$transformPause = $this->timeService->transformToSeconds((int)$hour, (int)$minute, (int)$second);
 		$stageModel = new StageModel();
 		$stageModel->text = $textValue;
 		$stageModel->pause = $transformPause;
@@ -39,13 +41,14 @@ class StageServices {
 		
 	}
 
-	public function createTimeStage(string $textValue, string $orderValue, $hourValue, $minuteValue, $dateDispatchVal) {
+	public function createTimeStage(string $textValue, string $orderValue, $hourValue, $minuteValue, $dateDispatchVal, $fileSrc) {
 		$stageTimeModel = new StageTimeModel();
 		$stageTimeModel->text = $textValue;
 		$stageTimeModel->hour = $hourValue;
 		$stageTimeModel->minute = $minuteValue;
 		$stageTimeModel->order = $orderValue;
 		$stageTimeModel->dateDispatch = $dateDispatchVal;
+		$stageTimeModel->file_src = $fileSrc;
 		return $stageTimeModel;
 	}
 }

@@ -41,7 +41,7 @@
 @section('main')
 
 <div class='container'>
-	<section class=' w-50'>
+	<section class=' w-100'>
 		<h1 class='pb-5'>Создать цепочку</h1>
 		@csrf
 		<div class="input-group mb-3">
@@ -120,12 +120,17 @@ function addMessageComponentByTime() {
 					<span class="input-group-text" id="basic-addon1">⇅</span>
 				</div>
 				<textarea placeholder='Текст' required class="form-control" type="text" name="text"></textarea>
-				<select name="dateDispatch">
+				<div class='d-flex flex-column gap-2'>
+				<input type='file' name='file' accept="image/*" />
+				<select class="form-control" name="dateDispatch">
 					<option selected value="today">Сегодня</option>
 					<option value="tomorrow">Завтра</option>
 				</select>
+				</div>
+				<div class='w-50 d-flex gap-2'>
 				<input class="form-control" type='number' name='hour' placeholder='Часы' />
 				<input class="form-control" type='number' name='minute' placeholder='Минуты' />
+				</div>
 				<button id='remove-item-${idItemNum}' type="button" class="btn btn-outline-danger">Х</button>
 			</div>
 		</div>`;
@@ -208,7 +213,12 @@ function parseInputs() {
 	items.forEach(function(item) {
 		const inputsChild = {};
 		item.querySelectorAll('input').forEach(function(input) {
-			inputsChild[input.name] = input.value;
+			if (input.type === 'file') {
+				inputsChild[input.name] = input.files[0];
+			} else {
+
+				inputsChild[input.name] = input.value;
+			}
 		});
 		item.querySelectorAll('textarea').forEach(function(input) {
 			inputsChild[input.name] = input.value;
@@ -228,11 +238,9 @@ function transformMessage() {
 			return {
 				text: item.text,
 				order: index,
-				pause: {
-					hour: item.hour,
-					minute: item.minute,
-					second: item.second
-				}
+				hour: item.hour,
+				minute: item.minute,
+				second: item.second
 			};
 		}
 		return {
@@ -240,7 +248,8 @@ function transformMessage() {
 			order: index,
 			hour: item.hour,
 			minute: item.minute,
-			dateDispatch: item.dateDispatch
+			dateDispatch: item.dateDispatch,
+			file: item.file
 		};
 	});
 	return transformed;
@@ -279,24 +288,41 @@ function submit() {
 	}
 	const data = {
 		title: title,
-		webinar_start_time: transformStartTime,
+		webinar_start_time: JSON.stringify(transformStartTime),
 		stages: messages
 	};
+
+	const formData = new FormData();
+	for (let key in data) {
+		if (key === 'stages') {
+			data[key].forEach((item, index) => {
+				for (let prop in item) {
+					console.log(item[prop])
+					formData.append(`stages[${index}][${prop}]`, item[prop]);
+				}
+			});
+		} else {
+			formData.append(key, data[key]);
+		}
+	}
+
 	fetch('/chain/create', {
 		method: 'POST',
 		headers: {
-			//'Content-Type': 'application/json',
-			'Content-Type': 'application/x-www-form-urlencoded',
-			"X-CSRF-Token": document.querySelector('input[name=_token]').value
+			'X-CSRF-TOKEN': '{{ csrf_token() }}',
 		},
-		body: JSON.stringify(data)
+		body: formData
 	}).then((res) => {
+		const response = res.json();
+		console.log(response)
 		if (res.status === 200) {
-			location.href = "/chain";
+			//location.href = "/chain";
 		} else {
 			alert("Ошибка при создании цепочки");
 		}
 		window.loadingFalse()
+	}).catch(error => {
+		console.error('Error:', error);
 	});
 }
 </script>
