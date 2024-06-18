@@ -43,6 +43,12 @@ class UserServices {
 		return UserModel::find($userId);
 	}
 
+	public function updateUserCreateAtNow($userId) {
+		$user = $this->getUserById($userId);
+		$user->create_at = $this->timeService->getServerTime();
+		$user->save();
+	}
+
 	public function updateUser($ttu,int $stage, int $userId) {
 		$user = $this->getUserById($userId);
 		$user->ttu = $ttu;
@@ -56,9 +62,6 @@ class UserServices {
 		foreach ($users as $user) {
 			if ($timeNow > Carbon::parse($user->ttu)) {
 				$bot = $this->botService->getBotById($user->telegraph_bot_id);
-				if($bot->disable) {
-					continue;
-				}
 				$chain = $this->botService->getBotChain($bot->id);
 				if(!$chain) {
 					continue;
@@ -68,8 +71,9 @@ class UserServices {
 				if(!$stage) {
 					continue;
 				}
-				$this->telegramService->sendMessage($bot->token, $user->tg_chat_id, '222');
-				$this->telegramService->sendPhoto($bot->token, $user->tg_chat_id,$stage->file_src, $stage->text);
+				if(!$bot->disable) {
+					$this->telegramService->sendContent($bot->token, $user->tg_chat_id,$stage->file_src, $stage->text);
+				}
 				$nextStage = $this->chainService->getChainStageByOrder($chain->id, $user->stage + 1);
 				if(!$nextStage) {
 					$this->updateUser($timeNow,-1, $user->id);
@@ -99,7 +103,7 @@ class UserServices {
 					}
 				}
 				if(isset($nextStage->pause)) {
-					$nextStage = $this->sendMessNeverPause($bot->token, $user->tg_chat_id, $user->stage + 1, $chain->id);
+					//$nextStage = $this->sendMessNeverPause($bot->token, $user->tg_chat_id, $user->stage + 1, $chain->id);
 					
 					if(!$nextStage) {
 						$this->updateUser($timeNow,-1, $user->id);

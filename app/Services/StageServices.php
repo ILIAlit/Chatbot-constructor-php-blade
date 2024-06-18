@@ -41,7 +41,7 @@ class StageServices {
 		
 	}
 
-	public function createTimeStage(string $textValue, string $orderValue, $hourValue, $minuteValue, $dateDispatchVal, $fileSrc) {
+	public function createTimeStage(string | null $textValue, string $orderValue, $hourValue, $minuteValue, $dateDispatchVal, $fileSrc) {
 		$stageTimeModel = new StageTimeModel();
 		$stageTimeModel->text = $textValue;
 		$stageTimeModel->hour = $hourValue;

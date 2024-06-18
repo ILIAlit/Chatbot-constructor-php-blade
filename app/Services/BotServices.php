@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\BotModel;
 use App\Models\ChainModel;
 use App\Models\TBotModel;
+use App\Models\UserModel;
 use DefStudio\Telegraph\Models\TelegraphBot;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -56,7 +57,7 @@ class BotServices {
         return $bot;
 	}
 
-	public function checkUserIsRegistered(int $botId, string $userName) {
+	public function checkUserIsRegistered(int $botId, string $userName): UserModel | bool {
 		$bot = $this->getBotById($botId);
         $user = $bot->users()->where('user_name', $userName)->first();
         if ($user) {

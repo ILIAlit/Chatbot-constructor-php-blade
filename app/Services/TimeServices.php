@@ -24,8 +24,10 @@ class TimeServices {
 		if(!isset($startHour)) {
 			return false;
 			}
+		$userRegTime = Carbon::parse($userRegisterTime);
+		$userHour = $userRegTime->hour;
 		$webTime = $timeNow->hour((int)$startHour)->minute((int)$startMinute)->second(0);
-		return Carbon::parse($userRegisterTime) > Carbon::parse($webTime);
+		return $userRegTime >= $webTime;
 	}
 
 	public function transformTimeToCarbon($time){

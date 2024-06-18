@@ -34,6 +34,8 @@ class ChainController extends Controller
             $webinarStartTime = null;
         }
 
+       
+
         $stages = array_map(function($stage, $index) use ($request) {
             if(!isset($stage['dateDispatch'])) {
                 return [
@@ -45,9 +47,12 @@ class ChainController extends Controller
                     
                 ];
             }
-            $file = $request->file('stages.'.$index.'.file');
-            $path = $file->store('public');
-            $path = $this->fileServices->generateLink($path);
+            if($request->hasFile('stages.'.$index.'.file')) {
+
+                $file = $request->file('stages.'.$index.'.file');
+                $path = $file->store('public');
+                $path = $this->fileServices->generateLink($path);
+            }
             return [
                 'text' => $stage['text'],
                 'dateDispatch' => $stage['dateDispatch'],
@@ -82,15 +87,42 @@ class ChainController extends Controller
     }
 
     public function updateChain(Request $request, string $chainId) {
-        $jsonData = $request->getContent();
-        $data = json_decode($jsonData);
-        $title = $data->title;
-        $stages = $data->stages;
-        $webinar_start_time = $data->webinar_start_time;
-        if(!$webinar_start_time) {
-            $webinar_start_time = null;
+        $title = $request->input('title');
+        $webinarStartTime = $request->input('webinar_start_time');
+        $webinarStartTime = json_decode($webinarStartTime);
+        $stages = $request->input('stages');
+        
+        if(!$webinarStartTime) {
+            $webinarStartTime = null;
         }
-        $this->chainServices->updateChain($chainId, $title, $stages, $webinar_start_time);
+
+        $stages = array_map(function($stage, $index) use ($request) {
+            if(!isset($stage['dateDispatch'])) {
+                return [
+                    'text' => $stage['text'],
+                    'order' => $stage['order'],
+                    'hour' => $stage['hour'],
+                    'minute' => $stage['minute'],
+                    'second' => $stage['second'],
+                    
+                ];
+            }
+            $path = null;
+            if($request->hasFile('stages.'.$index.'.file')) {
+                $file = $request->file('stages.'.$index.'.file');
+                $path = $file->store('public');
+                $path = $this->fileServices->generateLink($path);
+            }
+            return [
+                'text' => $stage['text'],
+                'dateDispatch' => $stage['dateDispatch'],
+                'hour' => $stage['hour'],
+                'minute' => $stage['minute'],
+                'order' => $stage['order'],
+                'file' => $path,
+            ];
+        }, $stages, array_keys($stages));
+        $this->chainServices->updateChain($chainId, $title, $stages, $webinarStartTime);
         //return redirect()->route('chain');
     }
 }

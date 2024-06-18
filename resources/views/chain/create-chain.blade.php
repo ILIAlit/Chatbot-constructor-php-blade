@@ -110,26 +110,46 @@ const messages = [];
 let idItemNum = 0
 let selectedItem = null;
 
+function fileValidate(file) {
+	var fileType = file.type;
+	var fileSize = file.size / 1024 / 1024;
+
+	if (fileSize > 2) {
+		alert('Размер файла не должен превышать 2 МБ');
+		return false;
+	}
+
+	if (fileType !== 'image/jpeg' && fileType !== 'image/png' && fileType !== 'video/mp4') {
+		alert('Файл должен быть изображением (JPEG или PNG) или видео в формате MP4');
+		return false;
+	}
+	return true
+}
+
 function addMessageComponentByTime() {
 	let elementContainer = document.getElementById('elements-container')
 	const messageElement = document.createElement("div");
 	messageElement.innerHTML =
 		`<div draggable='true' class='list-group-item'>
-			<div class='d-flex gap-2 card-body'>
+			<div class='d-flex card-body gap-1'>
 				<div class="input-group-prepend">
 					<span class="input-group-text" id="basic-addon1">⇅</span>
 				</div>
-				<textarea placeholder='Текст' required class="form-control" type="text" name="text"></textarea>
-				<div class='d-flex flex-column gap-2'>
-				<input type='file' name='file' accept="image/*" />
-				<select class="form-control" name="dateDispatch">
-					<option selected value="today">Сегодня</option>
-					<option value="tomorrow">Завтра</option>
-				</select>
-				</div>
-				<div class='w-50 d-flex gap-2'>
-				<input class="form-control" type='number' name='hour' placeholder='Часы' />
-				<input class="form-control" type='number' name='minute' placeholder='Минуты' />
+				<div class='d-flex flex-column gap-1 w-100'>
+				    <div class='d-flex gap-2'>
+						<textarea placeholder='Текст' required class="form-control" type="text" name="text"></textarea>
+						<select class="form-control" name="dateDispatch">
+							<option selected value="today">Сегодня</option>
+							<option value="tomorrow">Завтра</option>
+						</select>
+						<div class='w-50 d-flex gap-2'>
+						<input class="form-control" type='number' name='hour' placeholder='Часы' />
+						<input class="form-control" type='number' name='minute' placeholder='Минуты' />
+						</div>
+					</div>
+					<div>
+						<input type='file' class='form-control' name='file' accept="" />
+					</div>
 				</div>
 				<button id='remove-item-${idItemNum}' type="button" class="btn btn-outline-danger">Х</button>
 			</div>
@@ -267,7 +287,6 @@ function transformData(timeValue) {
 }
 
 function submit() {
-	window.loadingTrue()
 	const inputTitle = document.getElementById('title');
 	const inputStartTime = document.getElementById('start-time')
 	const messages = transformMessage()
@@ -286,6 +305,7 @@ function submit() {
 		alert("Пожалуйста, добавьте элемент цепочки.");
 		return;
 	}
+
 	const data = {
 		title: title,
 		webinar_start_time: JSON.stringify(transformStartTime),
@@ -297,7 +317,6 @@ function submit() {
 		if (key === 'stages') {
 			data[key].forEach((item, index) => {
 				for (let prop in item) {
-					console.log(item[prop])
 					formData.append(`stages[${index}][${prop}]`, item[prop]);
 				}
 			});
@@ -305,7 +324,8 @@ function submit() {
 			formData.append(key, data[key]);
 		}
 	}
-
+	window.loadingTrue()
+	return
 	fetch('/chain/create', {
 		method: 'POST',
 		headers: {
@@ -323,7 +343,9 @@ function submit() {
 		window.loadingFalse()
 	}).catch(error => {
 		console.error('Error:', error);
-	});
+	}).finally(() => {
+		window.loadingFalse()
+	})
 }
 </script>
 @endsection

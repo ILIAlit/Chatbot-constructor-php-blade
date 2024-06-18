@@ -26,7 +26,7 @@ Route::get('/chain/update-chain/{id}', [ChainController::class, 'getPageUpdate']
 Route::get('/chain', [ChainController::class, 'getAll'])->name('chain');
 Route::post('/chain/create', [ChainController::class, 'createChain'])->name('create-chain');
 Route::delete('/chain/delete-chain/{id}', [ChainController::class, 'deleteChain'])->name('delete-chain');
-Route::patch('/chain/update-chain/{id}', [ChainController::class, 'updateChain'])->name('update-chain');
+Route::post('/chain/update-chain/{id}', [ChainController::class, 'updateChain'])->name('update-chain');
 Route::post('/trigger/create', [TriggerController::class, 'create'])->name('create-trigger');
 Route::get('/trigger', [TriggerController::class, 'index'])->name('get-trigger-page');
 

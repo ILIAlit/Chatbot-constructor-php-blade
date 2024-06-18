@@ -54,13 +54,12 @@ class Handler extends WebhookHandler {
         $lastName = $this->message->from()->lastName();
         $userName = $this->message->from()->username();
 
-        $user  = $this->botServices->checkUserIsRegistered($botId, $userName);
-        if (!$user) {
-            return $this->userServices->createUser($name, $lastName, $userName, $botId, $chatId);
-        } else {
-            $this->userServices->updateUser(null , 0, $user->id);
-            return $user;
+        $user = $this->botServices->checkUserIsRegistered($botId, $userName);
+        if($user) {
+            $user->delete();
         }
+        $user = $this->userServices->createUser($name, $lastName, $userName, $botId, $chatId);
+        return $user;
     }
 
     private function getChain(UserModel $user, $chatId): ChainModel | null {
@@ -68,7 +67,6 @@ class Handler extends WebhookHandler {
         $chain = $this->botServices->getBotChain($botId);
         if(!$chain) {
             $bot = $this->botServices->getBotById($botId);
-
             $this->telegramServices->sendMessage($bot->token, $chatId, 'Бот в разработке!');
             return null;
         }
