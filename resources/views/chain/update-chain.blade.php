@@ -227,6 +227,19 @@ elementSelect.addEventListener('change', (event) => {
 	selectedItem = event.target.value;
 })
 
+//
+
+function checkedTimeChecker(hour, minute) {
+	if (hour && minute) {
+		startTimeChecker.checked = true
+		document.getElementById('input-start-time').classList.remove('d-none')
+		document.getElementById('start-time').value = `${hour}:${minute}`
+		return true;
+	}
+	return false;
+}
+checkedTimeChecker("{{$chain->hour}}", "{{$chain->minute}}")
+
 startTimeChecker.addEventListener('change', (event) => {
 	if (event.target.checked) {
 		document.getElementById('input-start-time').classList.remove('d-none')

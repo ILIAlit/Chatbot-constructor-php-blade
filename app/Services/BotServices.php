@@ -73,6 +73,12 @@ class BotServices {
         $bot->delete();
 	}
 
+	public function getBotUsers(string $botId) {
+		$bot = $this->getBotById($botId);
+        $users = $bot->users;
+        return $users;
+	}
+
 	private function registerWebhook(string $token) {
 		$getQuery = array(
 			"url" => env('APP_URL')."/telegraph/$token/webhook",

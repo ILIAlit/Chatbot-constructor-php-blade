@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BotModel;
 use App\Services\BotServices;
 use App\Services\ChainServices;
+use App\Services\TelegramServices;
 use App\Services\TriggerServices;
 use DefStudio\Telegraph\Models\TelegraphBot;
 use Illuminate\Http\Request;
@@ -15,11 +16,14 @@ class BotController extends Controller
     private BotServices $botService;
     private ChainServices $chainService;
 
+    private TelegramServices $telegramService;
+
     private TriggerServices $triggerService;
-    function __construct(BotServices $botService, ChainServices $chainService, TriggerServices $triggerService) {
+    function __construct(BotServices $botService, ChainServices $chainService, TriggerServices $triggerService, TelegramServices $telegramService) {
         $this->botService = $botService;
         $this->chainService = $chainService;
         $this->triggerService = $triggerService;
+        $this->telegramService = $telegramService;
     }
     public function create(Request $request) {
         $name = $request->input('name');
@@ -99,5 +103,20 @@ class BotController extends Controller
         $bot->save();
         return redirect()->route('home');
 
+    }
+
+    public function makeMailing(Request $request, string $botId) {
+        $text = $request->input('text');
+
+        $valid = $request->validate([
+            'text' => 'required',
+        ]);
+        $bot = $this->botService->getBotById($botId);
+        $users = $this->botService->getBotUsers($botId);
+        foreach ($users as $user) {
+            $this->telegramService->sendMessage($bot->token, $user->tg_chat_id, $text);
+        }
+        Log::info(json_decode($users));
+        return redirect()->route('home');
     }
 }

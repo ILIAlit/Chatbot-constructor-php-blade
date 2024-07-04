@@ -39,6 +39,7 @@ Route::post('/bot/create', [BotController::class, 'create'])->name('create-bot')
 Route::patch('/bot/changeBotChain/{id}', [BotController::class, 'changeBotChain'])->name('change-bot-chain');
 Route::patch('/bot/updateBotTriggers/{id}', [BotController::class, 'updateBotTriggers'])->name('update-bot-triggers');
 Route::delete('/bot/delete-bot/{id}', [BotController::class, 'deleteBot'])->name('delete-bot');
+Route::post('/bot/make-mailing/{id}', [BotController::class, 'makeMailing'])->name('make-bot-mailing');
 
 Route::get('/bot/disable/{botId}', [BotController::class, 'isDisabled'])->name('bot-disable');
 Route::get('/bot/not-disable/{botId}', [BotController::class, 'notDisabled'])->name('bot-not-disable');
