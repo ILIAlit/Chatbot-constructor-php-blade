@@ -35,6 +35,13 @@ class Handler extends WebhookHandler {
         $this->telegramServices = $telegramServices;
     }
 
+    public function handleUnknownCommand(Stringable $text): void {
+        $botId = $this->bot->id;
+        $bot = $this->botServices->getBotById($botId);
+        $chatId = $this->message->chat()->id();
+        $this->telegramServices->sendMessage($bot->token, $chatId, 'Извините, но я не знаю такую команду...');
+    }
+
     public function start(string $request) {
         $botId = $this->bot->id;
         $bot = $this->botServices->getBotById($botId);
