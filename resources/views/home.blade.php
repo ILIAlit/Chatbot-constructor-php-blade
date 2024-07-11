@@ -69,33 +69,33 @@
 				</td>
 
 			</tr>
-			@endforeach
-		</table>
-		<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-			aria-hidden="true">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content p-4">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Создать рассылку</h5>
+			<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content p-4">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Создать рассылку</h5>
+						</div>
+						<form onsubmit='window.loadingTrue()' method='post' action='/bot/make-mailing/{{$bot["id"]}}'>
+							@csrf
+							<textarea required class='w-full form-control p-2' rows="5" name='text'
+								placeholder='Текст рассылки'></textarea>
+							<div class="modal-footer">
+								<button class="btn btn-primary">Разослать</button>
+							</div>
+							@if ($errors-> any())
+							@foreach ($errors->all() as $error)
+							<div class="alert alert-danger" role="alert">
+								{{$error}}
+							</div>
+							@endforeach
+							@endif
+						</form>
 					</div>
-					<form onsubmit='window.loadingTrue()' method='post' action='/bot/make-mailing/{{$bot["id"]}}'>
-						@csrf
-						<textarea required class='w-full form-control p-2' rows="5" name='text'
-							placeholder='Текст рассылки'></textarea>
-						<div class="modal-footer">
-							<button class="btn btn-primary">Разослать</button>
-						</div>
-						@if ($errors-> any())
-						@foreach ($errors->all() as $error)
-						<div class="alert alert-danger" role="alert">
-							{{$error}}
-						</div>
-						@endforeach
-						@endif
-					</form>
 				</div>
 			</div>
-		</div>
+			@endforeach
+		</table>
 	</section>
 </div>
 <script>

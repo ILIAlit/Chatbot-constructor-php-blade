@@ -24,8 +24,8 @@ class StageServices {
     }
 
 	public function createStage($stage) {
-		if(isset($stage['dateDispatch'])) {
-			return $this->createTimeStage($stage['text'], $stage['order'], $stage['hour'], $stage['minute'], $stage['dateDispatch'], $stage['file']);
+		if(isset($stage['dayDispatch'])) {
+			return $this->createTimeStage($stage['text'], $stage['order'], $stage['hour'], $stage['minute'], $stage['dayDispatch'], $stage['file']);
 		} else {
 			return $this->createPauseStage($stage['text'], $stage['order'], $stage['hour'], $stage['minute'], $stage['second']);
 		}
@@ -41,13 +41,13 @@ class StageServices {
 		
 	}
 
-	public function createTimeStage(string | null $textValue, string $orderValue, $hourValue, $minuteValue, $dateDispatchVal, $fileSrc) {
+	public function createTimeStage(string | null $textValue, string $orderValue, $hourValue, $minuteValue, int $dayDispatchVal, $fileSrc) {
 		$stageTimeModel = new StageTimeModel();
 		$stageTimeModel->text = $textValue;
 		$stageTimeModel->hour = $hourValue;
 		$stageTimeModel->minute = $minuteValue;
 		$stageTimeModel->order = $orderValue;
-		$stageTimeModel->dateDispatch = $dateDispatchVal;
+		$stageTimeModel->day_dispatch = $dayDispatchVal;
 		$stageTimeModel->file_src = $fileSrc;
 		return $stageTimeModel;
 	}

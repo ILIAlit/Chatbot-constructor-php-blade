@@ -79,7 +79,7 @@ class UserServices {
 					$this->updateUser($timeNow,-1, $user->id);
 					continue;
 				}
-				if(isset($nextStage->dateDispatch)) {
+				if(isset($nextStage->day_dispatch)) {
 					$checkUserRegisterTime = $this->timeService->checkUserRegisterTime($chain->hour, $chain->minute, $user->created_at);
 					if($checkUserRegisterTime) {
 						$this->telegramService->sendMessage($bot->token, $user->tg_chat_id, 'Завтра');
@@ -87,19 +87,18 @@ class UserServices {
 						$this->updateUser($userTtu,$nextStage->order, $user->id);
 						continue;
 					} else {
-						if($nextStage->dateDispatch === DateDispatch::TODAY->value || $stage->dateDispatch === DateDispatch::TOMORROW->value) {
-							$this->telegramService->sendMessage($bot->token, $user->tg_chat_id, 'Сегодня');
-							$userTtu = $this->timeService->getUserTtuFoTime(0, $nextStage->hour, $nextStage->minute);
-							$this->updateUser($userTtu,$nextStage->order, $user->id);
-							continue;
+
+						$dayDispatch = $nextStage->day_dispatch - $stage->day_dispatch;
+						if($dayDispatch < 0) {
+							$dayDispatch = 0;
 						}
-						if($nextStage->dateDispatch === DateDispatch::TOMORROW->value) {
-							$this->telegramService->sendMessage($bot->token, $user->tg_chat_id, 'Завтра');
-                            $userTtu = $this->timeService->getUserTtuFoTime(1, $nextStage->hour, $nextStage->minute);
-                            $this->updateUser($userTtu,$nextStage->order, $user->id);
-                            continue;
-						}
+						Log::info($dayDispatch);
+						
+						$this->telegramService->sendMessage($bot->token, $user->tg_chat_id, 'через '. $dayDispatch);
+						$userTtu = $this->timeService->getUserTtuFoTime($dayDispatch, $nextStage->hour, $nextStage->minute);
+						$this->updateUser($userTtu,$nextStage->order, $user->id);
 						continue;
+						
 					}
 				}
 				if(isset($nextStage->pause)) {

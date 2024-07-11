@@ -138,9 +138,11 @@ function addMessageComponentByTime() {
 				<div class='d-flex flex-column gap-1 w-100'>
 				    <div class='d-flex gap-2'>
 						<textarea placeholder='Текст' required class="form-control" type="text" name="text"></textarea>
-						<select class="form-control" name="dateDispatch">
-							<option selected value="today">Сегодня</option>
-							<option value="tomorrow">Завтра</option>
+						<select class="form-control" name="dayDispatch">
+							<option selected value="0">Сегодня</option>
+							<option value="1">Завтра</option>
+							<option value="2">на 2-ой день</option>
+							<option value="3">на 3-ий день</option>
 						</select>
 						<div class='w-50 d-flex gap-2'>
 						<input class="form-control" type='number' name='hour' placeholder='Часы' />
@@ -254,7 +256,7 @@ function parseInputs() {
 function transformMessage() {
 	const inputs = parseInputs();
 	const transformed = inputs.map((item, index) => {
-		if (!item.dateDispatch) {
+		if (!item.dayDispatch) {
 			return {
 				text: item.text,
 				order: index,
@@ -268,7 +270,7 @@ function transformMessage() {
 			order: index,
 			hour: item.hour,
 			minute: item.minute,
-			dateDispatch: item.dateDispatch,
+			dayDispatch: item.dayDispatch,
 			file: item.file
 		};
 	});
@@ -312,6 +314,8 @@ function submit() {
 		stages: messages
 	};
 
+	console.log(data);
+	return
 	const formData = new FormData();
 	for (let key in data) {
 		if (key === 'stages') {
@@ -325,7 +329,6 @@ function submit() {
 		}
 	}
 	window.loadingTrue()
-	return
 	fetch('/chain/create', {
 		method: 'POST',
 		headers: {
