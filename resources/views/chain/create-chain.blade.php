@@ -314,8 +314,7 @@ function submit() {
 		stages: messages
 	};
 
-	console.log(data);
-	return
+
 	const formData = new FormData();
 	for (let key in data) {
 		if (key === 'stages') {

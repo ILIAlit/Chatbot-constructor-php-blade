@@ -41,8 +41,9 @@
 					</span>
 				</td>
 				<td class='span2 align-middle'>
-					<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-						data-bs-target=".bd-example-modal-lg">Создать рассылку</button>
+					<button onclick='createMailingFormAction({{$bot["id"]}})' type="button" class="btn btn-primary"
+						data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg"
+						data-bot-id="{{$bot['id']}}">Создать рассылку</button>
 				</td>
 				<td>
 					<button type="button" onclick='clickUpdateButton({{$bot["id"]}})'
@@ -76,7 +77,8 @@
 						<div class="modal-header">
 							<h5 class="modal-title" id="exampleModalLabel">Создать рассылку</h5>
 						</div>
-						<form onsubmit='window.loadingTrue()' method='post' action='/bot/make-mailing/{{$bot["id"]}}'>
+
+						<form id='modal-mailing-form' onsubmit='window.loadingTrue()' method='post'>
 							@csrf
 							<textarea required class='w-full form-control p-2' rows="5" name='text'
 								placeholder='Текст рассылки'></textarea>
@@ -99,6 +101,12 @@
 	</section>
 </div>
 <script>
+const createMailingFormAction = (botId) => {
+	const modalForm = document.getElementById('modal-mailing-form');
+	modalForm.action = '/bot/make-mailing/' + botId;
+	console.log(modalForm.action)
+}
+
 const clickDisableBotButton = (botId) => {
 	window.loadingTrue()
 	fetch(`/bot/disable/${botId}`, {

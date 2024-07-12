@@ -84,20 +84,15 @@ class Handler extends WebhookHandler {
         $bot = $this->botServices->getBotById($botId);
         $stages = $this->chainServices->getChainStages($chain->id);
         foreach($stages as $stage) {
-            if(isset($stage->dateDispatch)) {
+            if(isset($stage->day_dispatch)) {
                 $checkUserRegisterTime = $this->timeServices->checkUserRegisterTime($chain->hour, $chain->minute, $user->created_at);
                 if($checkUserRegisterTime) {
                     $userTtu = $this->timeServices->getUserTtuFoTime(1, $stage->hour, $stage->minute);
                     $this->userServices->updateUser($userTtu,$stage->order, $user->id);
                 } else {
-                    if($stage->dateDispatch === DateDispatch::TODAY->value) {
-                        $userTtu = $this->timeServices->getUserTtuFoTime(0, $stage->hour, $stage->minute);
-                        $this->userServices->updateUser($userTtu,$stage->order, $user->id);
-                    }
-                    if ($stage->dateDispatch === DateDispatch::TOMORROW->value) {
-                        $userTtu = $this->timeServices->getUserTtuFoTime(1, $stage->hour, $stage->minute);
-                        $this->userServices->updateUser($userTtu,$stage->order, $user->id);
-                    }
+						$this->telegramServices->sendMessage($bot->token, $user->tg_chat_id, 'через '. $stage->day_dispatch);
+						$userTtu = $this->timeServices->getUserTtuFoTime($stage->day_dispatch, $stage->hour, $stage->minute);
+						$this->userServices->updateUser($userTtu,$stage->order, $user->id);
                 }
                 break;
             }
