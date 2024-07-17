@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BotModel;
 use App\Services\BotServices;
 use App\Services\ChainServices;
+use App\Services\FileServices;
 use App\Services\TelegramServices;
 use App\Services\TriggerServices;
 use DefStudio\Telegraph\Models\TelegraphBot;
@@ -18,12 +19,15 @@ class BotController extends Controller
 
     private TelegramServices $telegramService;
 
+    private FileServices $fileServices;
+
     private TriggerServices $triggerService;
-    function __construct(BotServices $botService, ChainServices $chainService, TriggerServices $triggerService, TelegramServices $telegramService) {
+    function __construct(BotServices $botService, ChainServices $chainService, TriggerServices $triggerService, TelegramServices $telegramService, FileServices $fileServices) {
         $this->botService = $botService;
         $this->chainService = $chainService;
         $this->triggerService = $triggerService;
         $this->telegramService = $telegramService;
+        $this->fileServices = $fileServices;
     }
     public function create(Request $request) {
         $name = $request->input('name');
@@ -45,13 +49,16 @@ class BotController extends Controller
             if($bot['chain_model_id']) {
                 $chain = $this->chainService->getChainById($bot['chain_model_id']);
                 $chainTitle = $chain->title;
-            }   
+            }
+            $botUsers = $this->botService->getBotUsers($bot['id']);
+            
             return [
                 'id' => $bot['id'],
                 'name' => $bot['name'],
                 'token' => $bot['token'],
                 'disable' => $bot['disable'],
-                'chainName' =>  $chainTitle
+                'chainName' =>  $chainTitle,
+                'userCount' =>  $botUsers->count()
             ];
         }, $bots->toArray());
         return view('home', ['bots' => $responseBots]);
@@ -107,14 +114,21 @@ class BotController extends Controller
 
     public function makeMailing(Request $request, string $botId) {
         $text = $request->input('text');
-
+        $imagePath = null;
+        $image = $request->file('image');
+        if ($image) {
+            $imagePath = $image->store('public');
+        }
+        $imagePath = $this->fileServices->generateLink($imagePath);
+        Log::info($imagePath);
+    
         $valid = $request->validate([
             'text' => 'required',
         ]);
         $bot = $this->botService->getBotById($botId);
         $users = $this->botService->getBotUsers($botId);
         foreach ($users as $user) {
-            $this->telegramService->sendMessage($bot->token, $user->tg_chat_id, $text);
+           $this->telegramService->sendContent($bot->token, $user->tg_chat_id, $imagePath ,$text);
         }
         Log::info(json_decode($users));
         return redirect()->route('home');

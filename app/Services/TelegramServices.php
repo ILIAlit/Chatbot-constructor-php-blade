@@ -24,19 +24,19 @@ class TelegramServices {
 		$this->botServices = $botServices;
 	}
 
-	public function sendContent($botToken, $chainId, $filePath, $message) {
+	public function sendContent($botToken, $chatId, $filePath, $message) {
 		//$bot = $this->botServices->getBotById($botToken);
 		if($filePath) {
 			if($this->fileServices->checkIsImage($filePath)) {
-				$this->sendPhoto($botToken, $chainId, $filePath, $message);
+				$this->sendPhoto($botToken, $chatId, $filePath, $message);
 			}
 			if ($this->fileServices->checkIsVideo($filePath)) {
-				$this->sendVideo($botToken, $chainId, $filePath);
+				$this->sendVideo($botToken, $chatId, $filePath);
                 return;
 			}
 			return;
 		}
-		$this->sendMessage($botToken, $chainId, $message);
+		$this->sendMessage($botToken, $chatId, $message);
 		return;
 	}
 

@@ -41,12 +41,13 @@
 					</span>
 				</td>
 				<td class='span2 align-middle'>
-					<button onclick='createMailingFormAction({{$bot["id"]}})' type="button" class="btn btn-primary"
-						data-bs-toggle="modal" data-bs-target=".bd-example-modal-lg"
-						data-bot-id="{{$bot['id']}}">Создать рассылку</button>
+					<button
+						onclick='createMailingFormAction({{$bot["id"]}}); setUserCountMailForm({{$bot["userCount"]}})'
+						type="button" class="btn btn-primary" data-bs-toggle="modal"
+						data-bs-target=".bd-example-modal-lg" data-bot-id="{{$bot['id']}}">Создать рассылку</button>
 				</td>
 				<td>
-					<button type="button" onclick='clickUpdateButton({{$bot["id"]}})'
+					<button type="button" onclick='clickUpdateButton({{$bot["id"]}});'
 						class="btn btn-primary">Изменить</button>
 				</td>
 				<td>
@@ -76,12 +77,15 @@
 					<div class="modal-content p-4">
 						<div class="modal-header">
 							<h5 class="modal-title" id="exampleModalLabel">Создать рассылку</h5>
+							<h5 id='user-count-mail-form'></h5>
 						</div>
 
-						<form id='modal-mailing-form' onsubmit='window.loadingTrue()' method='post'>
+						<form id='modal-mailing-form' onsubmit='window.loadingTrue()' method='post'
+							enctype='multipart/form-data'>
 							@csrf
 							<textarea required class='w-full form-control p-2' rows="5" name='text'
 								placeholder='Текст рассылки'></textarea>
+							<input type='file' name='image' class='form-control mt-2'>
 							<div class="modal-footer">
 								<button class="btn btn-primary">Разослать</button>
 							</div>
@@ -105,6 +109,12 @@ const createMailingFormAction = (botId) => {
 	const modalForm = document.getElementById('modal-mailing-form');
 	modalForm.action = '/bot/make-mailing/' + botId;
 	console.log(modalForm.action)
+}
+
+const setUserCountMailForm = (userCount) => {
+	const userCountTag = document.getElementById('user-count-mail-form');
+	userCountTag.textContent = 'Получателей: ' + userCount;
+	console.log(userCount)
 }
 
 const clickDisableBotButton = (botId) => {
