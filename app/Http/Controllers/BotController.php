@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\BotMailing;
 use App\Models\BotModel;
 use App\Services\BotServices;
 use App\Services\ChainServices;
@@ -120,17 +121,13 @@ class BotController extends Controller
             $imagePath = $image->store('public');
         }
         $imagePath = $this->fileServices->generateLink($imagePath);
-        Log::info($imagePath);
     
         $valid = $request->validate([
             'text' => 'required',
         ]);
-        $bot = $this->botService->getBotById($botId);
-        $users = $this->botService->getBotUsers($botId);
-        foreach ($users as $user) {
-           $this->telegramService->sendContent($bot->token, $user->tg_chat_id, $imagePath ,$text);
-        }
-        Log::info(json_decode($users));
+        
+        BotMailing::dispatch($botId, $imagePath , $text);
+
         return redirect()->route('home');
     }
 }
