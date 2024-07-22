@@ -24,7 +24,8 @@ class SendMessageToUser implements ShouldQueue
      */
     public function __construct(string $botToken, string $chatId, string | null $imagePath, string $text)
     {
-         $this->telegramService = app(TelegramServices::class);
+        $this->telegramService = app(TelegramServices::class);
+
         $this->botToken = $botToken;
         $this->chatId = $chatId;
         $this->imagePath = $imagePath;
@@ -37,5 +38,18 @@ class SendMessageToUser implements ShouldQueue
     public function handle(): void
     {
         $this->telegramService->sendContent($this->botToken, $this->chatId, $this->imagePath, $this->text);
+    }
+
+    public function __sleep()
+    {
+        return ['botToken', 'chatId', 'imagePath', 'text'];
+    }
+
+    /**
+     * Restore the instance after deserialization.
+     */
+    public function __wakeup()
+    {
+        $this->telegramService = app(TelegramServices::class);
     }
 }

@@ -41,15 +41,11 @@ class BotMailing implements ShouldQueue
     public function __construct($botId, $imagePath, $text)
     {
         $this->botService = app(BotServices::class);
-        $this->chainService = app(ChainServices::class);
-        $this->triggerService = app(TriggerServices::class);
         $this->telegramService = app(TelegramServices::class);
-        $this->fileServices = app(FileServices::class);
 
         $this->botId = $botId;
         $this->imagePath = $imagePath;
         $this->text = $text;
-
     }
 
     /**
@@ -63,4 +59,19 @@ class BotMailing implements ShouldQueue
            SendMessageToUser::dispatch($bot->token, $user->tg_chat_id, $this->imagePath, $this->text);
         }
     }
+
+    public function __sleep()
+    {
+        return ['botId', 'imagePath', 'text'];
+    }
+
+    /**
+     * Restore the instance after deserialization.
+     */
+    public function __wakeup()
+    {
+        $this->botService = app(BotServices::class);
+        $this->telegramService = app(TelegramServices::class);
+    }
+    
 }
