@@ -60,7 +60,7 @@ class BotMailing implements ShouldQueue
         $bot = $this->botService->getBotById($this->botId);
         $users = $this->botService->getBotUsers($this->botId);
         foreach ($users as $user) {
-           $this->telegramService->sendContent($bot->token, $user->tg_chat_id, $this->imagePath ,$this->text);
+           SendMessageToUser::dispatch($bot->token, $user->tg_chat_id, $this->imagePath, $this->text);
         }
     }
 }
