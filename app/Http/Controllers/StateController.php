@@ -23,12 +23,12 @@ class StateController extends Controller
 
 	public function getUsersCreateStatistics(Request $request) {
 
-		$selectedBot = $request->query('bot-selected');
+		$selectedBotId = $request->query('bot-selected');
 		$dateStart = $request->query('date-start');
 		$dateStop = $request->query('date-stop');
 		$bots = TelegraphBot::all();
-		if(!$selectedBot) {
-			$selectedBot = $bots[0];
+		if(!$selectedBotId) {
+			$selectedBotId = $bots[0]->id;
 		}
 
 		if (!$dateStart) {
@@ -43,14 +43,12 @@ class StateController extends Controller
 			$dateStop = Carbon::parse($dateStop);
 		}
 
-		Log::info($selectedBot);
-		$selectedBotId = (int) $selectedBot; 
+		
 
 		$users = DB::table('user_models')
-        ->select(DB::raw('strftime("%w", created_at) as day'), DB::raw('count(*) as count'))
+        ->select()
 		->where('telegraph_bot_id', '=', $selectedBotId)
         ->whereBetween('created_at', [$dateStart, $dateStop])
-        ->groupBy('day')
         ->get();
 
 		$activeUsers = DB::table('user_models')
@@ -58,6 +56,8 @@ class StateController extends Controller
 		->where('telegraph_bot_id', '=', $selectedBotId)
 		->where('stage', '!=', -1)
 		->get();
+
+		Log::info(json_encode($users));
 
 		$responseData = [
 			'users' => $users->toArray(),
