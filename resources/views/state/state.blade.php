@@ -167,6 +167,22 @@
 		<h1 class='pb-5'>Статистика</h1>
 		@csrf
 		<div class=''>
+
+			<div>
+				<form method="GET" action="/state-user-create" class="w-100 d-flex gap-2 my-3">
+					<select name='bot-selected' class='form-control'>
+						<option disabled value="">Бот</option>
+						@foreach ($bots as $bot)
+						<option value="{{$bot->id}}">{{$bot->name}}</option>
+						@endforeach
+					</select>
+					<input name='date-start' value="{{$dateStart}}" class='form-control' type='date' />
+					<input name='date-stop' value="{{$dateStop}}" class='form-control' type='date' />
+					<button type="submit" class="btn btn-primary mb-5">Загрузить</button>
+				</form>
+
+			</div>
+
 			<div class="w-100">
 				<div class="metric">
 					<div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="white"
