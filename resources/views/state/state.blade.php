@@ -176,8 +176,8 @@
 						<option value="{{$bot->id}}">{{$bot->name}}</option>
 						@endforeach
 					</select>
-					<input name='date-start' value="{{$dateStart}}" class='form-control' type='date' />
-					<input name='date-stop' value="{{$dateStop}}" class='form-control' type='date' />
+					<input name='date-start' required value="{{$dateStart}}" class='form-control' type='date' />
+					<input name='date-stop' required value="{{$dateStop}}" class='form-control' type='date' />
 					<button type="submit" class="btn btn-primary">Загрузить</button>
 				</form>
 
@@ -185,25 +185,32 @@
 
 			<div class="w-100">
 				<div class="metric">
-					<div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="white"
-							class="bi bi-person" viewBox="0 0 16 16">
-							<path
-								d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+					<div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+							fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+							class="lucide lucide-user-round">
+							<circle cx="12" cy="8" r="5" />
+							<path d="M20 21a8 8 0 0 0-16 0" />
 						</svg></div>
 					<p>
 						<span class="number">{{count($users)}}</span>
-						<span class="title">Зарегистрировано в диапазоне</span>
+						<span class="title">Зарегистрировано с {{$dateStart}} по {{$dateStop}}</span>
 					</p>
 				</div>
 			</div>
 
 			<div class="w-100">
 				<div class="metric">
-					<div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="white"
-							class="bi bi-person" viewBox="0 0 16 16">
-							<path
-								d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
-						</svg></div>
+					<div class="icon">
+
+
+						<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+							stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+							class="lucide lucide-user-round-check">
+							<path d="M2 21a8 8 0 0 1 13.292-6" />
+							<circle cx="10" cy="8" r="5" />
+							<path d="m16 19 2 2 4-4" />
+						</svg>
+					</div>
 					<p>
 						<span class="number">{{count($activeUsers)}}</span>
 						<span class="title">Активных пользователя</span>

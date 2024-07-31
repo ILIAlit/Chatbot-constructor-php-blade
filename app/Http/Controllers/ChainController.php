@@ -59,6 +59,7 @@ class ChainController extends Controller
                 'dayDispatch' => $stage['dayDispatch'],
                 'hour' => $stage['hour'],
                 'minute' => $stage['minute'],
+                 'second' => $stage['second'],
                 'order' => $stage['order'],
                 'file' => $path,
             ];
@@ -98,7 +99,7 @@ class ChainController extends Controller
         }
 
         $stages = array_map(function($stage, $index) use ($request) {
-            if(!isset($stage['dateDispatch'])) {
+            if(!isset($stage['dayDispatch'])) {
                 return [
                     'text' => $stage['text'],
                     'order' => $stage['order'],
@@ -116,7 +117,7 @@ class ChainController extends Controller
             }
             return [
                 'text' => $stage['text'],
-                'dateDispatch' => $stage['dateDispatch'],
+                'dayDispatch' => $stage['dayDispatch'],
                 'hour' => $stage['hour'],
                 'minute' => $stage['minute'],
                 'order' => $stage['order'],

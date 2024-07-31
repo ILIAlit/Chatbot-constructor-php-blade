@@ -57,8 +57,8 @@ class UserServices {
 	}
 	
 	public function checkUserTtu() {
-		$users = UserModel::all();
 		$timeNow = $this->timeService->getServerTime();
+		$users = UserModel::where('ttu', '<', $timeNow)->get();
 		foreach ($users as $user) {
 			if ($timeNow > Carbon::parse($user->ttu)) {
 				$bot = $this->botService->getBotById($user->telegraph_bot_id);
@@ -82,7 +82,6 @@ class UserServices {
 				if(isset($nextStage->day_dispatch)) {
 					$checkUserRegisterTime = $this->timeService->checkUserRegisterTime($chain->hour, $chain->minute, $user->created_at);
 					if($checkUserRegisterTime) {
-						$this->telegramService->sendMessage($bot->token, $user->tg_chat_id, 'Завтра');
 						$userTtu = $this->timeService->getUserTtuFoTime(1, $nextStage->hour, $nextStage->minute);
 						$this->updateUser($userTtu,$nextStage->order, $user->id);
 						continue;
@@ -102,8 +101,6 @@ class UserServices {
 					}
 				}
 				if(isset($nextStage->pause)) {
-					//$nextStage = $this->sendMessNeverPause($bot->token, $user->tg_chat_id, $user->stage + 1, $chain->id);
-					
 					if(!$nextStage) {
 						$this->updateUser($timeNow,-1, $user->id);
 						continue;

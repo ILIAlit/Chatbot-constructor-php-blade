@@ -34,7 +34,7 @@ function registerDdD() {
 	})
 }
 
-function addMessageComponentByTime(text = null, hour = null, minute = null, dateDispatch = null) {
+function addMessageComponentByTime(text = null, hour = null, minute = null, dayDispatch = null, file = null) {
 	let elementContainer = document.getElementById('elements-container')
 	const messageElement = document.createElement("div");
 	messageElement.innerHTML =
@@ -46,27 +46,42 @@ function addMessageComponentByTime(text = null, hour = null, minute = null, date
 				<div class='d-flex flex-column gap-1 w-100'>
 				    <div class='d-flex gap-2'>
 						<textarea placeholder='Текст' required class="form-control" type="text" name="text" value="${text ? text : ''}">${text ? text : ''}</textarea>
-						<select name="dateDispatch" id="dateDispatch-${idItemNum}">
-							<option value="today">Сегодня</option>
-							<option value="tomorrow">Завтра</option>
+						<select class="form-control" name="dayDispatch" id="dayDispatch-${idItemNum}">
+							<option selected value="0">Сегодня</option>
+							<option value="1">Завтра</option>
+							<option value="2">на 2-ой день</option>
+							<option value="3">на 3-ий день</option>
 						</select>
 						<div class='w-50 d-flex gap-2'>
 						<input class="form-control" value="${hour}" type='number' name='hour' placeholder='Часы' />
 						<input class="form-control" type='number' value="${minute}" name='minute' placeholder='Минуты' />
+						<input class="form-control" type='number' value="0" name='second' disabled placeholder='Секунды' />
 						</div>
 					</div>
-					<div>
-						<input type='file' class='form-control' name='file' accept="" />
+					<div id='time-file-input-${idItemNum}'>
+						
 					</div>
 				</div>
+				
 				<button id='remove-item-${idItemNum}' type="button" class="btn btn-outline-danger">Х</button>
 			</div>
 		</div>`
+	console.log(file)
+
 	elementContainer.appendChild(messageElement)
-	const selectElement = document.getElementById(`dateDispatch-${idItemNum}`)
+	const selectElement = document.getElementById(`dayDispatch-${idItemNum}`)
+
+	const timeFileInput = document.getElementById(`time-file-input-${idItemNum}`)
+	if (file) {
+		timeFileInput.innerHTML =
+			`<button class="btn btn-primary">Изменить файл</button>`
+	} else {
+
+		timeFileInput.innerHTML = `<input type='file' class='form-control' name='file' accept="" />`
+	}
 
 	selectElement.querySelectorAll('option').forEach(function(option) {
-		if (option.value === dateDispatch) {
+		if (option.value === dayDispatch) {
 			option.selected = true;
 		}
 	});
@@ -149,7 +164,7 @@ function addMessageComponentByPause(text = null, seconds = null) {
 @section('main')
 
 <div class='container'>
-	<section class=' w-50'>
+	<section class=' w-100'>
 		<h1 class='pb-5'>Изменить цепочку</h1>
 		@csrf
 		<div class="input-group mb-3">
@@ -182,7 +197,8 @@ function addMessageComponentByPause(text = null, seconds = null) {
 				</script>
 				@else
 				<script>
-				addMessageComponentByTime(`{{$stage->text}}`, "{{$stage->hour}}", "{{$stage->minute}}", "{{$stage->dateDispatch}}")
+				addMessageComponentByTime(`{{$stage->text}}`, "{{$stage->hour}}", "{{$stage->minute}}", "{{$stage->dayDispatch}}",
+					"{{$stage->file_src}}")
 				</script>
 				@endif
 
@@ -228,12 +244,22 @@ elementSelect.addEventListener('change', (event) => {
 })
 
 //
+function formatTime(time) {
+	let [hours, minutes] = time.split(':');
+
+
+	hours = hours.padStart(2, '0');
+	minutes = minutes.padStart(2, '0');
+
+	return `${hours}:${minutes}`;
+}
 
 function checkedTimeChecker(hour, minute) {
 	if (hour && minute) {
 		startTimeChecker.checked = true
 		document.getElementById('input-start-time').classList.remove('d-none')
-		document.getElementById('start-time').value = `${hour}:${minute}`
+		document.getElementById('start-time').value = formatTime(`${hour}:${minute}`)
+		console.log(`${hour}:${minute}`)
 		return true;
 	}
 	return false;
@@ -289,7 +315,7 @@ function parseInputs() {
 function transformMessage() {
 	const inputs = parseInputs();
 	const transformed = inputs.map((item, index) => {
-		if (!item.dateDispatch) {
+		if (!item.dayDispatch) {
 			return {
 				text: item.text,
 				order: index,
@@ -303,7 +329,7 @@ function transformMessage() {
 			order: index,
 			hour: item.hour,
 			minute: item.minute,
-			dateDispatch: item.dateDispatch,
+			dayDispatch: item.dayDispatch,
 			file: item.file
 		};
 	});
@@ -346,6 +372,8 @@ function submit(chainId) {
 		webinar_start_time: JSON.stringify(transformStartTime),
 		stages: messages
 	};
+
+
 
 	const formData = new FormData();
 	for (let key in data) {

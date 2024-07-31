@@ -25,7 +25,7 @@
 				<th>Активная цепочка</th>
 				<th>Активность</th>
 				<th>Изменить</th>
-				<th>Удалить</th>
+				<th>Блокировка</th>
 			</tr>
 			@foreach ($bots as $bot)
 			<tr>
@@ -51,22 +51,24 @@
 						class="btn btn-primary">Изменить</button>
 				</td>
 				<td>
+					@if ($bot['disable'])
+					<button href='#' class="btn btn-primary"
+						onclick='clickNotDisableBotButton({{$bot["id"]}})'>Включить</button>
+					@else
+					<button href='#' class="btn btn-primary"
+						onclick='clickDisableBotButton({{$bot["id"]}})'>Выключить</button>
+					@endif
+				</td>
+				<td>
 					<div class="dropdown">
 						<button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenu2"
 							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							Danger zone
 						</button>
-						<iiv class="dropdown-menu" aria-labelledby="dropdownMenu2">
+						<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
 							<a class="dropdown-item" href='#' onclick='clickDeleteButton({{$bot["id"]}})'
 								class="btn btn-danger">Удалить</a>
-							@if ($bot['disable'])
-							<a href='#' class="dropdown-item" onclick='clickNotDisableBotButton({{$bot["id"]}})'
-								class="btn btn-primary">Включить</a>
-							@else
-							<a href='#' class="dropdown-item" onclick='clickDisableBotButton({{$bot["id"]}})'
-								class="btn btn-danger">Выключить</a>
-							@endif
-						</iiv>
+						</div>
 					</div>
 				</td>
 
@@ -158,20 +160,23 @@ const clickUpdateButton = (botId) => {
 }
 
 const clickDeleteButton = function(botId) {
-	window.loadingTrue()
-	fetch(`/bot/delete-bot/${botId}`, {
-		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			"X-CSRF-Token": document.querySelector('input[name=_token]').value
-		},
-	}).then((res) => {
-		if (res.status === 200) {
-			location.reload()
-		}
-	}).finally(() => {
-		window.loadingFalse()
-	})
+	if (window.confirm('Удалить бота?')) {
+		window.loadingTrue()
+		fetch(`/bot/delete-bot/${botId}`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				"X-CSRF-Token": document.querySelector('input[name=_token]').value
+			},
+		}).then((res) => {
+			if (res.status === 200) {
+				location.reload()
+			}
+		}).finally(() => {
+			window.loadingFalse()
+		})
+	}
+
 
 }
 </script>
