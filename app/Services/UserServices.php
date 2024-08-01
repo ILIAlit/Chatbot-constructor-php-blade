@@ -58,7 +58,7 @@ class UserServices {
 	
 	public function checkUserTtu() {
 		$timeNow = $this->timeService->getServerTime();
-		$users = UserModel::where('ttu', '<', $timeNow)->get();
+		$users = UserModel::where('ttu', '<', $timeNow)->where('stage', '!=', -1)->get();
 		foreach ($users as $user) {
 			if ($timeNow > Carbon::parse($user->ttu)) {
 				$bot = $this->botService->getBotById($user->telegraph_bot_id);
@@ -87,7 +87,7 @@ class UserServices {
 						continue;
 					} else {
 
-						$dayDispatch = $nextStage->day_dispatch - $stage->day_dispatch;
+						$dayDispatch = $nextStage->day_dispatch;
 						if($dayDispatch < 0) {
 							$dayDispatch = 0;
 						}
