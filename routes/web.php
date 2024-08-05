@@ -44,4 +44,6 @@ Route::post('/bot/make-mailing/{id}', [BotController::class, 'makeMailing'])->na
 Route::get('/bot/disable/{botId}', [BotController::class, 'isDisabled'])->name('bot-disable');
 Route::get('/bot/not-disable/{botId}', [BotController::class, 'notDisabled'])->name('bot-not-disable');
 
+Route::patch('/bot/updateBotWebHook/{id}', [BotController::class, 'updateBotWebHook'])->name('update-bot-webhook');
+
 Route::get('/state-user-create', [StateController::class, 'getUsersCreateStatistics'])->name('state-user-create');

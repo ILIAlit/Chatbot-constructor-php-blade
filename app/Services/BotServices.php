@@ -73,6 +73,11 @@ class BotServices {
         $bot->delete();
 	}
 
+	public function updateBotWebHook(string $botId) {
+        $bot = $this->getBotById($botId);
+		$this->registerWebhook($bot->token);
+    }
+
 	public function getBotUsers(string $botId) {
 		$bot = $this->getBotById($botId);
         $users = $bot->users;

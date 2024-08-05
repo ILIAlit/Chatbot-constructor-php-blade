@@ -87,6 +87,10 @@ class BotController extends Controller
         $this->botService->changeBotChain($botId, $chainId);
     }
 
+    public function updateBotWebHook(Request $request, string $botId) {
+        $this->botService->updateBotWebHook($botId);
+    }
+
     public function updateBotTriggers(Request $request, string $botId) {
         $jsonData = $request->getContent();
         $data = json_decode($jsonData);

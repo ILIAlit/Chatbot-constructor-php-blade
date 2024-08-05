@@ -78,6 +78,9 @@
 		<br />
 		<button onclick='window.loadingTrue(), updateBotChain({{$bot->id}}), updateBotTriggers({{$bot->id}})'
 			id='submit-btn' type="button" class="btn btn-primary mt-5">Сохранить</button>
+		<hr>
+		<button onclick='window.loadingTrue(), updateBotWebhook({{$bot->id}})' id='update-webhook-btn' type="button"
+			class="btn btn-primary mt-1">Обновить Webhook</button>
 
 
 
@@ -121,6 +124,23 @@ function updateBotTriggers(botId) {
 		},
 		body: JSON.stringify({
 			triggers: checkTriggers
+		}),
+	}).then((res) => {
+		if (res.status === 200) {
+			location.href = '/'
+		}
+	})
+}
+
+function updateBotWebhook(botId) {
+	fetch(`/bot/updateBotWebHook/${botId}`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			"X-CSRF-Token": document.querySelector('input[name=_token]').value
+		},
+		body: JSON.stringify({
+
 		}),
 	}).then((res) => {
 		if (res.status === 200) {
