@@ -101,6 +101,7 @@ class ChainController extends Controller
         $stages = array_map(function($stage, $index) use ($request) {
             if(!isset($stage['dayDispatch'])) {
                 return [
+                    
                     'text' => $stage['text'],
                     'order' => $stage['order'],
                     'hour' => $stage['hour'],
@@ -110,18 +111,22 @@ class ChainController extends Controller
                 ];
             }
             $path = null;
+            if(isset($stage['src']) && $stage['src'] !== 'undefined') {
+                $path = $stage['src'];
+            }
             if($request->hasFile('stages.'.$index.'.file')) {
                 $file = $request->file('stages.'.$index.'.file');
                 $path = $file->store('public');
                 $path = $this->fileServices->generateLink($path);
             }
-            return [
+            return [ 
                 'text' => $stage['text'],
                 'dayDispatch' => $stage['dayDispatch'],
                 'hour' => $stage['hour'],
                 'minute' => $stage['minute'],
                 'order' => $stage['order'],
                 'file' => $path,
+                'fileEdit' => $stage['fileEdit']
             ];
         }, $stages, array_keys($stages));
         $this->chainServices->updateChain($chainId, $title, $stages, $webinarStartTime);

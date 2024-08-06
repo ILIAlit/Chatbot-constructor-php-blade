@@ -34,7 +34,7 @@ function registerDdD() {
 	})
 }
 
-function addMessageComponentByTime(text = null, hour = null, minute = null, dayDispatch = null, file = null) {
+function addMessageComponentByTime(text = null, hour = null, minute = null, dayDispatch = null, file = null, id) {
 	let elementContainer = document.getElementById('elements-container')
 	const messageElement = document.createElement("div");
 	messageElement.innerHTML =
@@ -61,12 +61,13 @@ function addMessageComponentByTime(text = null, hour = null, minute = null, dayD
 					<div id='time-file-input-${idItemNum}'>
 						
 					</div>
+					<input type='number' value='${id}' name='id' style="display:none;" disabled />
 				</div>
 				
 				<button id='remove-item-${idItemNum}' type="button" class="btn btn-outline-danger">Х</button>
 			</div>
 		</div>`
-	console.log(file)
+
 
 	elementContainer.appendChild(messageElement)
 	const selectElement = document.getElementById(`dayDispatch-${idItemNum}`)
@@ -74,10 +75,16 @@ function addMessageComponentByTime(text = null, hour = null, minute = null, dayD
 	const timeFileInput = document.getElementById(`time-file-input-${idItemNum}`)
 	if (file) {
 		timeFileInput.innerHTML =
-			`<button class="btn btn-primary">Изменить файл</button>`
+			`<button class="btn btn-primary" id="edit-file-btn-${idItemNum}">Изменить файл</button> <input style="display: none;" type='file' edit="no" class='form-control' name='file' accept="" /> <input style="display: none;" type='text' value='${file}' name='src' accept="" />`
+
+		const editFileBtn = document.getElementById(`edit-file-btn-${idItemNum}`)
+		editFileBtn.addEventListener('click', function(event) {
+			timeFileInput.innerHTML =
+				`<input type='file' edit="yes" class='form-control' name='file' accept="" />`
+		})
 	} else {
 
-		timeFileInput.innerHTML = `<input type='file' class='form-control' name='file' accept="" />`
+		timeFileInput.innerHTML = `<input type='file' edit="yes" class='form-control' name='file' accept="" />`
 	}
 
 	selectElement.querySelectorAll('option').forEach(function(option) {
@@ -96,7 +103,7 @@ function addMessageComponentByTime(text = null, hour = null, minute = null, dayD
 	idItemNum++;
 }
 
-function addMessageComponentByPause(text = null, seconds = null) {
+function addMessageComponentByPause(text = null, seconds = null, id) {
 	if (seconds) {
 		timeObject = secondsConverter(seconds)
 	}
@@ -113,6 +120,7 @@ function addMessageComponentByPause(text = null, seconds = null) {
 				<input value="${seconds ? timeObject.minutes : ''}" class="form-control" type='number' name='minute' placeholder='Минуты' />
 				<input value="${seconds ? timeObject.seconds : ''}"  class="form-control" name='second' type='number' placeholder='Секунды' />
 				<button id='remove-item-${idItemNum}' type="button" class="btn btn-outline-danger">Х</button>
+				<input type='number' value='${id}' name='id' disabled />
 			</div>
 		</div>`;
 	elementContainer.appendChild(messageElement)
@@ -193,12 +201,12 @@ function addMessageComponentByPause(text = null, seconds = null) {
 				@foreach ($stages as $stage)
 				@if (isset($stage->pause))
 				<script>
-				addMessageComponentByPause(`{{$stage->text}}`, "{{$stage->pause}}")
+				addMessageComponentByPause(`{{$stage->text}}`, "{{$stage->pause}}", `{{$stage->id}}`)
 				</script>
 				@else
 				<script>
 				addMessageComponentByTime(`{{$stage->text}}`, "{{$stage->hour}}", "{{$stage->minute}}", "{{$stage->dayDispatch}}",
-					"{{$stage->file_src}}")
+					"{{$stage->file_src}}", `{{$stage->id}}`)
 				</script>
 				@endif
 
@@ -259,7 +267,6 @@ function checkedTimeChecker(hour, minute) {
 		startTimeChecker.checked = true
 		document.getElementById('input-start-time').classList.remove('d-none')
 		document.getElementById('start-time').value = formatTime(`${hour}:${minute}`)
-		console.log(`${hour}:${minute}`)
 		return true;
 	}
 	return false;
@@ -296,8 +303,8 @@ function parseInputs() {
 		item.querySelectorAll('input').forEach(function(input) {
 			if (input.type === 'file') {
 				inputsChild[input.name] = input.files[0];
+				inputsChild['fileEdit'] = input.getAttribute('edit');
 			} else {
-
 				inputsChild[input.name] = input.value;
 			}
 		});
@@ -314,6 +321,7 @@ function parseInputs() {
 
 function transformMessage() {
 	const inputs = parseInputs();
+	console.log(inputs)
 	const transformed = inputs.map((item, index) => {
 		if (!item.dayDispatch) {
 			return {
@@ -330,7 +338,9 @@ function transformMessage() {
 			hour: item.hour,
 			minute: item.minute,
 			dayDispatch: item.dayDispatch,
-			file: item.file
+			file: item.file,
+			fileEdit: item.fileEdit,
+			src: item.src
 		};
 	});
 	return transformed;
@@ -380,7 +390,6 @@ function submit(chainId) {
 		if (key === 'stages') {
 			data[key].forEach((item, index) => {
 				for (let prop in item) {
-					console.log(item[prop])
 					formData.append(`stages[${index}][${prop}]`, item[prop]);
 				}
 			});

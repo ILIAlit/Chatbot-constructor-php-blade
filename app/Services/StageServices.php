@@ -51,4 +51,12 @@ class StageServices {
 		$stageTimeModel->file_src = $fileSrc;
 		return $stageTimeModel;
 	}
+
+	public function getPauseStageById(int $id) {
+		return StageModel::where('id', $id)->first();
+	}
+
+	public function getTimeStageById(int $id) {
+        return StageTimeModel::where('id', $id)->first();
+    }
 }
