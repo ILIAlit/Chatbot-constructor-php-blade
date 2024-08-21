@@ -139,10 +139,9 @@ function addMessageComponentByTime() {
 				    <div class='d-flex gap-2'>
 						<textarea placeholder='Текст' required class="form-control" type="text" name="text"></textarea>
 						<select class="form-control" name="dayDispatch">
-							<option selected value="0">Сегодня</option>
-							<option value="1">Завтра</option>
-							<option value="2">на 2-ой день</option>
-							<option value="3">на 3-ий день</option>
+							<option selected value="0">В это же день</option>
+							<option value="1">Через день</option>
+							<option value="2">Через 2 дня</option>
 						</select>
 						<div class='w-50 d-flex gap-2'>
 						<input class="form-control" type='number' name='hour' placeholder='Часы' />

@@ -6,6 +6,7 @@ use App\Http\Controllers\ChainController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\TriggerController;
+use App\Http\Controllers\UserController;
 use App\Models\BotModel;
 use App\Models\TBotModel;
 use DefStudio\Telegraph\Models\TelegraphBot;
@@ -17,7 +18,9 @@ Route::get('/I', function () {
 
 Route::get('/', [BotController::class, 'getAll'])->name('home');
 
+
 Route::get('/logs', [LogController::class, 'index'])->name('get-logs');
+
 
 Route::get('/chain/create', function () {
     return view('/chain/create-chain');
@@ -27,6 +30,8 @@ Route::get('/chain', [ChainController::class, 'getAll'])->name('chain');
 Route::post('/chain/create', [ChainController::class, 'createChain'])->name('create-chain');
 Route::delete('/chain/delete-chain/{id}', [ChainController::class, 'deleteChain'])->name('delete-chain');
 Route::post('/chain/update-chain/{id}', [ChainController::class, 'updateChain'])->name('update-chain');
+
+
 Route::post('/trigger/create', [TriggerController::class, 'create'])->name('create-trigger');
 Route::get('/trigger', [TriggerController::class, 'index'])->name('get-trigger-page');
 
@@ -40,10 +45,12 @@ Route::patch('/bot/changeBotChain/{id}', [BotController::class, 'changeBotChain'
 Route::patch('/bot/updateBotTriggers/{id}', [BotController::class, 'updateBotTriggers'])->name('update-bot-triggers');
 Route::delete('/bot/delete-bot/{id}', [BotController::class, 'deleteBot'])->name('delete-bot');
 Route::post('/bot/make-mailing/{id}', [BotController::class, 'makeMailing'])->name('make-bot-mailing');
-
 Route::get('/bot/disable/{botId}', [BotController::class, 'isDisabled'])->name('bot-disable');
 Route::get('/bot/not-disable/{botId}', [BotController::class, 'notDisabled'])->name('bot-not-disable');
-
 Route::patch('/bot/updateBotWebHook/{id}', [BotController::class, 'updateBotWebHook'])->name('update-bot-webhook');
 
+
 Route::get('/state-user-create', [StateController::class, 'getUsersCreateStatistics'])->name('state-user-create');
+
+
+Route::delete('/user/delete/{userId}', [UserController::class, 'deleteUser'])->name('delete-user');

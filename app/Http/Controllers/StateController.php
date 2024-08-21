@@ -57,7 +57,7 @@ class StateController extends Controller
 		->where('stage', '!=', -1)
 		->get();
 
-		Log::info(json_encode($users));
+		
 
 		$responseData = [
 			'users' => $users->toArray(),

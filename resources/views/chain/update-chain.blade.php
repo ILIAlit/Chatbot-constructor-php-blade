@@ -34,7 +34,7 @@ function registerDdD() {
 	})
 }
 
-function addMessageComponentByTime(text = null, hour = null, minute = null, dayDispatch = null, file = null, id) {
+function addMessageComponentByTime(text = null, hour = null, minute = null, dayDispatch = null, file = null) {
 	let elementContainer = document.getElementById('elements-container')
 	const messageElement = document.createElement("div");
 	messageElement.innerHTML =
@@ -47,10 +47,10 @@ function addMessageComponentByTime(text = null, hour = null, minute = null, dayD
 				    <div class='d-flex gap-2'>
 						<textarea placeholder='Текст' required class="form-control" type="text" name="text" value="${text ? text : ''}">${text ? text : ''}</textarea>
 						<select class="form-control" name="dayDispatch" id="dayDispatch-${idItemNum}">
-							<option selected value="0">Сегодня</option>
-							<option value="1">Завтра</option>
-							<option value="2">на 2-ой день</option>
-							<option value="3">на 3-ий день</option>
+							<option selected value="0">В это же день</option>
+							<option value="1">Через день</option>
+							<option value="2">Через 2 дня</option>
+							
 						</select>
 						<div class='w-50 d-flex gap-2'>
 						<input class="form-control" value="${hour}" type='number' name='hour' placeholder='Часы' />
@@ -61,7 +61,7 @@ function addMessageComponentByTime(text = null, hour = null, minute = null, dayD
 					<div id='time-file-input-${idItemNum}'>
 						
 					</div>
-					<input type='number' value='${id}' name='id' style="display:none;" disabled />
+					
 				</div>
 				
 				<button id='remove-item-${idItemNum}' type="button" class="btn btn-outline-danger">Х</button>
@@ -71,6 +71,14 @@ function addMessageComponentByTime(text = null, hour = null, minute = null, dayD
 
 	elementContainer.appendChild(messageElement)
 	const selectElement = document.getElementById(`dayDispatch-${idItemNum}`)
+
+
+	selectElement.querySelectorAll('option').forEach(function(option) {
+
+		if (option.value === dayDispatch) {
+			option.selected = true;
+		}
+	});
 
 	const timeFileInput = document.getElementById(`time-file-input-${idItemNum}`)
 	if (file) {
@@ -87,11 +95,7 @@ function addMessageComponentByTime(text = null, hour = null, minute = null, dayD
 		timeFileInput.innerHTML = `<input type='file' edit="yes" class='form-control' name='file' accept="" />`
 	}
 
-	selectElement.querySelectorAll('option').forEach(function(option) {
-		if (option.value === dayDispatch) {
-			option.selected = true;
-		}
-	});
+
 
 
 	const removeItemButton = document.getElementById(`remove-item-${idItemNum}`)
@@ -120,7 +124,7 @@ function addMessageComponentByPause(text = null, seconds = null, id) {
 				<input value="${seconds ? timeObject.minutes : ''}" class="form-control" type='number' name='minute' placeholder='Минуты' />
 				<input value="${seconds ? timeObject.seconds : ''}"  class="form-control" name='second' type='number' placeholder='Секунды' />
 				<button id='remove-item-${idItemNum}' type="button" class="btn btn-outline-danger">Х</button>
-				<input type='number' value='${id}' name='id' disabled />
+				
 			</div>
 		</div>`;
 	elementContainer.appendChild(messageElement)
@@ -204,9 +208,10 @@ function addMessageComponentByPause(text = null, seconds = null, id) {
 				addMessageComponentByPause(`{{$stage->text}}`, "{{$stage->pause}}", `{{$stage->id}}`)
 				</script>
 				@else
+
 				<script>
-				addMessageComponentByTime(`{{$stage->text}}`, "{{$stage->hour}}", "{{$stage->minute}}", "{{$stage->dayDispatch}}",
-					"{{$stage->file_src}}", `{{$stage->id}}`)
+				addMessageComponentByTime(`{{$stage->text}}`, "{{$stage->hour}}", "{{$stage->minute}}", "{{$stage->day_dispatch}}",
+					"{{$stage->file_src}}")
 				</script>
 				@endif
 

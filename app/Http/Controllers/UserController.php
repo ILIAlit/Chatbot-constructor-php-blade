@@ -8,5 +8,8 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    
+    public function deleteUser(Request $request, string $userId) {
+		$user = UserModel::find($userId);
+		$user->delete();
+	}
 }
