@@ -11,25 +11,33 @@ use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
 
+
 class BotServices {
 
 	private ChainServices $chainService;
 
 	private TimeServices $timeService;
+	
 	public function __construct(ChainServices $chainService, TimeServices $timeService) {
         $this->chainService = $chainService;
 		$this->timeService = $timeService;
     }
 	public function createBot(string $token, string $name) {
 		DB::transaction(function () use ($token, $name) {
-				$bot = TelegraphBot::create([
-					'token' => $token,
-					'name' => $name,
-				]);
-			
-				$bot->save();
+				try {
+					$bot = TelegraphBot::create([
+						'token' => $token,
+						'name' => $name,
+					]);
 				
-				$this->registerWebhook($token);
+					$bot->save();
+					
+					$this->registerWebhook($token);
+				}
+				catch (\Exception $e) {
+                    Log::error("Error creating bot: ". $e->getMessage());
+                    return false;
+                }
 			});
 	}
 

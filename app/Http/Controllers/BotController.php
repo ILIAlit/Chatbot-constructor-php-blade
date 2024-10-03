@@ -40,6 +40,7 @@ class BotController extends Controller
         ]);
         
         $this->botService->createBot($token, $name);
+        
         return redirect()->route('home');
     }
 
@@ -131,7 +132,7 @@ class BotController extends Controller
         ]);
         
         BotMailing::dispatch($botId, $imagePath , $text);
-
+        
         return redirect()->route('home');
     }
 }

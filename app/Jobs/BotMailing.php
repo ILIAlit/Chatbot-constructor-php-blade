@@ -53,11 +53,7 @@ class BotMailing implements ShouldQueue
      */
     public function handle(): void
     {
-        $bot = $this->botService->getBotById($this->botId);
-        $users = $this->botService->getBotUsers($this->botId);
-        foreach ($users as $user) {
-           SendMessageToUser::dispatch($bot->token, $user->tg_chat_id, $this->imagePath, $this->text);
-        }
+        $this->telegramService->botMailing($this->botId, $this->imagePath, $this->text);
     }
 
     public function __sleep()
