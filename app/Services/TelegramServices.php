@@ -37,8 +37,8 @@ class TelegramServices {
 				}
 				return;
 			}
-			$this->sendMessage($botToken, $chatId, $message);
-			return;
+			$res = $this->sendMessage($botToken, $chatId, $message);
+			return $res;
 		}
 		catch (\Exception $e) {
             Log::error('Error sending message content to Telegram: '. $e->getMessage());
@@ -88,6 +88,7 @@ class TelegramServices {
 				],
 			]);
 			$this->messageLogger($response, $message);
+			return $response;
 		}
 		catch (\Exception $e) {
             Log::error('Telegram sendMessage error: '. $e->getMessage());

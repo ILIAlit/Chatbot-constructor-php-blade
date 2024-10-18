@@ -30,7 +30,7 @@ class UserModelFactory extends Factory
             'user_name' => fake()->userName(),
             'stage' => "0",
             'tg_chat_id' => random_int(1000000000, 9999999999),
-            'telegraph_bot_id' => "19",
+            'telegraph_bot_id' => "6",
         ];
     }
 

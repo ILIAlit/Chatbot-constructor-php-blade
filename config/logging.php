@@ -64,6 +64,12 @@ return [
          'level' => 'debug',
      ],
 
+        'efficiency_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/efficiency.log'),
+            'level' => 'debug',
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),

@@ -12,9 +12,11 @@ use App\Services\ChainServices;
 use App\Services\TimeServices;
 use App\Services\TriggerServices;
 use App\Services\UserServices;
+use DateTime;
 use DefStudio\Telegraph\Handlers\WebhookHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Stringable;
+use Throwable;
 
 class Handler extends WebhookHandler {
     private UserServices $userServices;
@@ -43,6 +45,7 @@ class Handler extends WebhookHandler {
     }
 
     public function start(string $request) {
+        $startTime = new DateTime('now');
         $botId = $this->bot->id;
         $bot = $this->botServices->getBotById($botId);
         $chatId = $this->message->chat()->id();
@@ -54,6 +57,9 @@ class Handler extends WebhookHandler {
         }
         if(!$chain) return;
         $this->processStages($chain, $user, $botId, $chatId);
+        $endTime = new DateTime('now');
+        $interval = $startTime->diff($endTime);
+        Log::channel('efficiency_log')->debug($interval->format('%S секунд, %f  микросекунд'));
     }
 
     private function getUser(int $botId, int $chatId): UserModel {

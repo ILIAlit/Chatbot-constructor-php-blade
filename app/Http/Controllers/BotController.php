@@ -7,6 +7,7 @@ use App\Models\BotModel;
 use App\Services\BotServices;
 use App\Services\ChainServices;
 use App\Services\FileServices;
+use App\Services\MailUserServices;
 use App\Services\TelegramServices;
 use App\Services\TriggerServices;
 use DefStudio\Telegraph\Models\TelegraphBot;
@@ -23,12 +24,16 @@ class BotController extends Controller
     private FileServices $fileServices;
 
     private TriggerServices $triggerService;
-    function __construct(BotServices $botService, ChainServices $chainService, TriggerServices $triggerService, TelegramServices $telegramService, FileServices $fileServices) {
+
+    private MailUserServices $mailUserServices;
+
+    function __construct(BotServices $botService, ChainServices $chainService, TriggerServices $triggerService, TelegramServices $telegramService, FileServices $fileServices, MailUserServices $mailUserServices) {
         $this->botService = $botService;
         $this->chainService = $chainService;
         $this->triggerService = $triggerService;
         $this->telegramService = $telegramService;
         $this->fileServices = $fileServices;
+        $this->mailUserServices = $mailUserServices;
     }
     public function create(Request $request) {
         $name = $request->input('name');
@@ -131,8 +136,8 @@ class BotController extends Controller
             'text' => 'required',
         ]);
         
-        BotMailing::dispatch($botId, $imagePath , $text);
-        
+        //BotMailing::dispatch($botId, $imagePath , $text);
+        $this->mailUserServices->createMail($botId, $text, $imagePath);
         return redirect()->route('home');
     }
 }

@@ -92,6 +92,12 @@ class BotServices {
         return $users;
 	}
 
+	public function getBotUsersOffset(string $botId, int $offset, int $limit) {
+		$bot = $this->getBotById($botId);
+	    $users = $bot->users()->offset($offset)->limit($limit)->get();
+	    return $users;
+	}
+
 	private function registerWebhook(string $token) {
 		$getQuery = array(
 			"url" => env('APP_URL')."/telegraph/$token/webhook",
