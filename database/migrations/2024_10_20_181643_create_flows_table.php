@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('flows', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->integer('number');
+            $table->unsignedBiginteger('bot_flow_id');
             $table->foreign('bot_flow_id')
           ->references('id')->on('bot_flows')
           ->onDelete('cascade');

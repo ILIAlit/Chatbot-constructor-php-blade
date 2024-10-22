@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('bot_flows', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('token')->unique();
+            $table->string('name');
             $table->integer('day');
             $table->date('start_date');
             $table->time('time_message_send');

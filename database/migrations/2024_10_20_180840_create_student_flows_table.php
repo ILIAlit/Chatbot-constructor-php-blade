@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('student_flows', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->integer('chat_id');
+            $table->string('name');
+            $table->unsignedBiginteger('flow_id');
             $table->foreign('flow_id')
           ->references('id')->on('flows')
           ->onDelete('cascade');

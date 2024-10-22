@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BotController;
+use App\Http\Controllers\BotFlowController;
 use App\Http\Controllers\BotManController;
 use App\Http\Controllers\ChainController;
 use App\Http\Controllers\LogController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Models\BotModel;
 use App\Models\TBotModel;
 use DefStudio\Telegraph\Models\TelegraphBot;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/I', function () {
@@ -54,3 +56,14 @@ Route::get('/state-user-create', [StateController::class, 'getUsersCreateStatist
 
 
 Route::delete('/user/delete/{userId}', [UserController::class, 'deleteUser'])->name('delete-user');
+
+
+Route::post('/bot-flow/create', [BotFlowController::class, 'create']);
+
+Route::get('/bot-flow/create', function () {
+    return view('bot-flow/create');
+});
+
+Route::get('/bot-flow/get-web-hook-data', function() {
+    dd(Cache::get('webhook-data'));
+});
