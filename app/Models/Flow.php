@@ -18,4 +18,9 @@ class Flow extends Model
     {
       return $this->belongsTo(BotFlow::class);
     }
+
+    public function flowDays()
+    {
+      return $this->hasMany(FlowDay::class);
+    }
 }

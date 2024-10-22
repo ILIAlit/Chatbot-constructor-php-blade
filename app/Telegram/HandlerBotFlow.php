@@ -33,8 +33,6 @@ class HandlerBotFlow {
 		$bot = BotFlow::where([
 			'token' => $token,
 		])->first();
-
-		$this->telegramService->sendMessage($token, $userChatId, $userName);
 		
 		if (!$bot) {
 			Log::info('Бот не найден');
@@ -50,17 +48,24 @@ class HandlerBotFlow {
             return response()->json(['message' => 'Поток не найден']);
         }
 
+		$flowDayNum = $flow->day;
+
+		$flowDay = $flow->flowDays()->where([
+			'number' => $flowDayNum,
+		])->first();
+
+		if (!$flowDay) {
+            Log::info('День потока не найден');
+            return response()->json(['message' => 'День потока не найден']);
+        }
+
 		$user = $flow->users()->firstOrCreate([
 			'name' => $userName,
 			'chat_id' => $userChatId
 		]);
 
-		// получить день потока
-		// найти день в таблице дней потока
-		// отправить сообщение этого дня
+		$this->telegramService->sendMessage($token, $userChatId, $flowDay->text);
 
-		Log::info('Telegram webhook received: '. $token);
-		Cache::forever('webhook-data', $request->all());
 		return true;
 	}
 }

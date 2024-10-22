@@ -59,14 +59,14 @@ class BotController extends Controller
             }
             $botUsers = $this->botService->getBotUsers($bot['id']);
             
-            return [
-                'id' => $bot['id'],
-                'name' => $bot['name'],
-                'token' => $bot['token'],
-                'disable' => $bot['disable'],
-                'chainName' =>  $chainTitle,
-                'userCount' =>  $botUsers->count()
-            ];
+                return [
+                    'id' => $bot['id'],
+                    'name' => $bot['name'],
+                    'token' => $bot['token'],
+                    'disable' => $bot['disable'],
+                    'chainName' =>  $chainTitle,
+                    'userCount' =>  $botUsers ? $botUsers->count() : 0
+                ];
         }, $bots->toArray());
         return view('home', ['bots' => $responseBots]);
     }
