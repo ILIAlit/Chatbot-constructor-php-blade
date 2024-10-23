@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('flows', function (Blueprint $table) {
-            $table->integer('day');
+            $table->integer('day')->default('1');
         });
     }
 
