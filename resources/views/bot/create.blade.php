@@ -6,7 +6,7 @@
 		<form onsubmit='window.loadingTrue()' id='create-bot-form' class='mb-3' method='post' action='/bot/create'>
 			@csrf
 
-			<h1 class='pb-5'>Создать бота</h1>
+			<h1 class='pb-5'>Создать бота для вебинара</h1>
 			<div class="input-group mb-3">
 				<span class="input-group-text" id="basic-addon1">🤖</span>
 				<input type="text" required class="form-control p-2" id='name' name='name' placeholder="Имя"

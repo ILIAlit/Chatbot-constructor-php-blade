@@ -9,6 +9,12 @@ class Flow extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+      'number',    
+      'bot_flow_id',
+      'day',
+  ];
+
     public function users()
     {
       return $this->hasMany(StudentFlow::class);

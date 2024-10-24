@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BotFlowApi;
 
+use App\Http\Controllers\Controller;
 use App\Models\BotFlow;
-use App\Services\BotFlowServices;
+use App\Services\BotFlowServices\BotFlowServices;
 use App\Services\TimeServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -32,6 +33,18 @@ class BotFlowController extends Controller
 
 		$this->botFlowServices->create($token, $name);
 		return redirect()->route('home');
+    }
+
+	public function getAll() {
+		$bots = BotFlow::all();
+        $responseBots = array_map(function ($bot) { 
+            return [
+                'id' => $bot['id'],
+                'name' => $bot['name'],
+                'token' => $bot['token'],
+            ];
+        }, $bots->toArray());
+        return view('bot-flow/get-all', ['bots' => $responseBots]);
     }
 
     

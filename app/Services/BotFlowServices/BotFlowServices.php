@@ -1,16 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\BotFlowServices;
 use App\Models\BotFlow;
-use App\Models\BotModel;
-use App\Models\ChainModel;
-use App\Models\TBotModel;
-use App\Models\UserModel;
-use DefStudio\Telegraph\Models\TelegraphBot;
+use App\Services\TelegramServices;
+use App\Services\TimeServices;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Http;
 
 
 class BotFlowServices {
@@ -72,22 +67,19 @@ class BotFlowServices {
 		$userName = $userData['name'];
 		$userChatId = $userData['chatId'];
 
-		$bot = BotFlow::where([
-			'token' => $token,
-		])->first();
-		
+		$bot = $this->getBot($token);
 		if (!$bot) {
 			Log::info('Бот не найден');
             return response()->json(['message' => 'Бот не найден']);
         }
 
-		$flow = $bot->flows()->where([
-			'number' => $flowNumber
-		])->first();
+		$flow = $this->getBotFlowWhereNumber($bot, $flowNumber); 
 
 		if (!$flow) {
 			Log::info('Поток не найден');
+			$this->telegramServices->sendMessage($token, $userChatId, 'Поток не найден');
             return response()->json(['message' => 'Поток не найден']);
+
         }
 
 		$flowDayNum = $flow->day;
@@ -106,16 +98,42 @@ class BotFlowServices {
 			'chat_id' => $userChatId
 		]);
 
-		$this->telegramServices->sendMessage($token, $userChatId, $flowDay->text);
+		if(!$user) {
+			Log::info('Ошибка регистрации!');
+			$this->telegramServices->sendMessage($token, $userChatId, 'Ошибка регистрации!');
+            return response()->json(['message' => 'Ошибка регистрации!']);
+		}
+
+		$this->telegramServices->sendMessage($token, $userChatId, 'Регистрация прошла успешно✨');
 
 		return true;
+	}
+
+	/**
+     * @param string $token
+	 * @return BotFlow | null
+	 */
+	public function getBot(string $token) {
+		return BotFlow::where([
+            'token' => $token,
+        ])->first();
+	}
+
+	/**
+     * @param BotFlow $botFlow
+     * @param int $flowNumber
+     * @return \App\Models\Flow | null
+     */
+	public function getBotFlowWhereNumber(BotFlow $botFlow, int $flowNumber) {
+		return $botFlow->flows()->where([
+            'number' => $flowNumber,
+        ])->first();
 	}
 
 
 
 	/**
      * @param string $token
-	 * 
 	 */
 	private function registerWebhook(string $token) {
 		$getQuery = array(

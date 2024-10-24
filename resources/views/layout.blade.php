@@ -102,13 +102,25 @@ body {
 							<ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
 								<li class="w-100">
 									<a href="/" class="nav-link px-0"> <span class="d-none d-sm-inline text-black">Мои
-											боты</span>
+											боты (вебинар)</span>
+									</a>
+								</li>
+								<li class="w-100">
+									<a href="/bot-flow/get-all" class="nav-link px-0"> <span
+											class="d-none d-sm-inline text-black">Мои
+											боты (потоки)</span>
 									</a>
 								</li>
 								<li>
 									<a href="/bot/create" class="nav-link px-0"> <span
 											class="d-none d-sm-inline text-black">Создать
-											бота</span>
+											бота для вебинара</span>
+									</a>
+								</li>
+								<li>
+									<a href="/bot-flow/create" class="nav-link px-0"> <span
+											class="d-none d-sm-inline text-black">Создать
+											бота для потока</span>
 									</a>
 								</li>
 							</ul>

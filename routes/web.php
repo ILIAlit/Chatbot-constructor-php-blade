@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\BotController;
-use App\Http\Controllers\BotFlowController;
+use App\Http\Controllers\BotFlowApi\BotFlowController;
+use App\Http\Controllers\BotFlowApi\DaysController;
+use App\Http\Controllers\BotFlowApi\FlowController;
 use App\Http\Controllers\BotManController;
 use App\Http\Controllers\ChainController;
 use App\Http\Controllers\LogController;
@@ -58,11 +60,19 @@ Route::get('/state-user-create', [StateController::class, 'getUsersCreateStatist
 Route::delete('/user/delete/{userId}', [UserController::class, 'deleteUser'])->name('delete-user');
 
 
+
+
+
 Route::post('/bot-flow/create', [BotFlowController::class, 'create']);
+Route::post('/flow/create', [FlowController::class, 'create']);
+
 
 Route::get('/bot-flow/create', function () {
     return view('bot-flow/create');
 });
+Route::get('/bot-flow/get-all', [BotFlowController::class, 'getAll'])->name('bot-flow/get-all');
+Route::get('/bot-flow/get-all-flow/{botId}', [FlowController::class, 'getBotFlow'])->name('bot-flow/get-all-flow');
+Route::get('/bot-flow/all-days/{flowId}', [DaysController::class, 'getFlowDays'])->name('bot-flow/all-days');
 
 Route::get('/bot-flow/get-web-hook-data', function() {
     dd(Cache::get('webhook-data'));
