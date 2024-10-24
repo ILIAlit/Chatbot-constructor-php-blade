@@ -2,6 +2,7 @@
 namespace App\Telegram\BotFlow;
 
 use App\Models\BotFlow;
+use App\Services\BotFlowServices;
 use App\Services\TelegramServices;
 use DefStudio\Telegraph\Handlers\WebhookHandler;
 use Illuminate\Http\Request;
@@ -16,13 +17,16 @@ class HandlerBotFlow {
 
 	private $pattern = '/\/api\/telegram\/([^\/]+)\/webhook-bot-flow/';
 
+	private BotFlowServices $botFlowServices;
+
 	protected const Commands = [
 		
 		'/start' => Start::class
 	];
 
-	public function __construct(TelegramServices $telegramService) {
+	public function __construct(TelegramServices $telegramService, BotFlowServices $botFlowServices) {
         $this->telegramService = $telegramService;
+		$this->botFlowServices = $botFlowServices;
     }
 	
 	public function index(Request $request) {
@@ -44,56 +48,23 @@ class HandlerBotFlow {
 		}
 		$this->run($request);
 		return true;
-
-
-
-		// $token = $request->input('token');
-		// $flowNumber = 1;
-		// $userName = $request->input('message')['from']['username'];
-		// $userChatId = $request->input('message')['chat']['id'];
-
-		// $bot = BotFlow::where([
-		// 	'token' => $token,
-		// ])->first();
-		
-		// if (!$bot) {
-		// 	Log::info('Бот не найден');
-        //     return response()->json(['message' => 'Бот не найден']);
-        // }
-
-		// return true;
-
-		// $flow = $bot->flows()->where([
-		// 	'number' => $flowNumber
-		// ])->first();
-
-		// if (!$flow) {
-		// 	Log::info('Поток не найден');
-        //     return response()->json(['message' => 'Поток не найден']);
-        // }
-
-		// $flowDayNum = $flow->day;
-
-		// $flowDay = $flow->flowDays()->where([
-		// 	'number' => $flowDayNum,
-		// ])->first();
-
-		// if (!$flowDay) {
-        //     Log::info('День потока не найден');
-        //     return response()->json(['message' => 'День потока не найден']);
-        // }
-
-		// $user = $flow->users()->firstOrCreate([
-		// 	'name' => $userName,
-		// 	'chat_id' => $userChatId
-		// ]);
-
-		// $this->telegramService->sendMessage($token, $userChatId, $flowDay->text);
-
-		// return true;
 	}
 
 	public function run(Request $request) {
+
+		if(!isset($request->input('message')['entities'][0]['type'])) {
+				$text = $request->input('message')['text'];
+				if(is_numeric($text)) {
+					$this->botFlowServices->handleUserStart([
+						'name' => $request->input('message')['from']['username'],
+						'chatId' => $request->input('message')['chat']['id'],
+                        'token' => $request->input('token'),
+						'flowNumber' => $text
+					]);
+					return true;
+				}
+		}
+		
 		$this->telegramService->sendMessage($request->input('token'),$request->input('message')['chat']['id'],'Не удалось обработать сообщение!');
 	}
 }

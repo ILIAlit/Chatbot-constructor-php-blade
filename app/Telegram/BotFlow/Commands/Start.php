@@ -6,10 +6,12 @@ use App\Services\TelegramServices;
 use App\Telegram\BotFlow\HandlerBotFlow;
 use Illuminate\Http\Request;
 
-class Start extends HandlerBotFlow {
+class Start {
 
-	public function __construct(TelegramServices $telegramServices) {
-		parent::__construct($telegramServices);
+	private TelegramServices $telegramService;
+
+	public function __construct(TelegramServices $telegramService) {
+		$this->telegramService = $telegramService;
 	}
 
 	/**

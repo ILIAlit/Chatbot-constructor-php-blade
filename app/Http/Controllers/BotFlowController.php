@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BotFlow;
+use App\Services\BotFlowServices;
 use App\Services\TimeServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -10,10 +11,14 @@ use Illuminate\Support\Facades\DB;
 
 class BotFlowController extends Controller
 {
+
+	private BotFlowServices $botFlowServices;
+
 	private TimeServices $timeServices;
 
-	public function __construct(TimeServices $timeServices) {
+	public function __construct(TimeServices $timeServices, BotFlowServices $botFlowServices) {
         $this->timeServices = $timeServices;
+		$this->botFlowServices = $botFlowServices;
     }
 
     public function create(Request $request) {
@@ -25,37 +30,9 @@ class BotFlowController extends Controller
             'name' => 'required|min:5',
         ]);
 
-		DB::transaction(function () use ($token, $name) {
-			try {
-				$bot = BotFlow::create([
-					'token' => $token,
-					'name' => $name,
-					'day' => 1,
-					'start_date' => $this->timeServices->getServerTime(),
-					'time_message_send' => $this->timeServices->getServerTime(),
-				]);
-			
-				$bot->save();
-				
-				$this->registerWebhook($token);
-			}
-			catch (\Exception $e) {
-				Log::error("Error creating bot: ". $e->getMessage());
-				return false;
-			}
-		});
+		$this->botFlowServices->create($token, $name);
 		return redirect()->route('home');
     }
 
-    private function registerWebhook(string $token) {
-		$getQuery = array(
-			"url" => env('APP_URL')."/api/telegram/$token/webhook-bot-flow",
-	   );
-	   $ch = curl_init("https://api.telegram.org/bot". $token ."/setWebhook?" . http_build_query($getQuery));
-	   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	   curl_setopt($ch, CURLOPT_HEADER, false);
-	
-	   $resultQuery = curl_exec($ch);
-	   curl_close($ch);
-	}
+    
 }
