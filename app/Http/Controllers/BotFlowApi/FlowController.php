@@ -18,6 +18,7 @@ class FlowController extends Controller
         $flow = Flow::create([
             'number' => $flowNumber,
             'bot_flow_id' => $botId,
+            'day' => 1
         ]);
         return redirect()->route("bot-flow/get-all-flow", ['botId' => $botId]);
     }

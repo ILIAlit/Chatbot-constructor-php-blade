@@ -11,18 +11,19 @@ class DaysController extends Controller
 
     public function create(Request $request) {
         $dayNumber = $request->input('number');
-        $botId = $request->input('botId');
+        $flowId = $request->input('flowId');
         $flowDay = FlowDay::create([
             'number' => $dayNumber,
-            'bot_flow_id' => $botId,
+            'flow_id' => $flowId,
+            'text' => "test $dayNumber"
         ]);
-        return redirect()->route("bot-flow/get-all-flow", ['botId' => $botId]);
+        return redirect()->route("bot-flow/all-days", ['flowId' => $flowId]);
     }
 
     public function getFlowDays($flowId) {
-        $days = FlowDay::all()->where(
+        $days = FlowDay::where(
             'flow_id', $flowId
-        );
-        return view('bot-flow/all-days', ['days' => $days]);
+        )->orderBy('number')->get();
+        return view('bot-flow/all-days', ['days' => $days, 'flowId' => $flowId]);
     }
 }

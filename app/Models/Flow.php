@@ -12,7 +12,7 @@ class Flow extends Model
     protected $fillable = [
       'number',    
       'bot_flow_id',
-      'day',
+      'day'
   ];
 
     public function users()

@@ -20,8 +20,37 @@
 		<button onclick='' type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
 			data-bs-target=".bd-example-modal-lg">Добавить день</button>
 		@csrf
+		<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content p-4">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Создать день</h5>
+					</div>
+					<form onsubmit='window.loadingTrue()' method='post' action='/flow-days/create'>
+						@csrf
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="basic-addon1">🌟</span>
+							<input value='{{$flowId}}' type="number" required name='flowId' hidden>
+							<input type="number" required class="form-control p-2" id='number' name='number'
+								placeholder="Номер дня" aria-label="Триггер" aria-describedby="basic-addon1">
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary">Создать</button>
+						</div>
+						@if ($errors-> any())
+						@foreach ($errors->all() as $error)
+						<div class="alert alert-danger" role="alert">
+							{{$error}}
+						</div>
+						@endforeach
+						@endif
+					</form>
+				</div>
+			</div>
+		</div>
 		<table class="table table-hover">
-			<? print_r($flows) ?>
+
 			@foreach ($days as $day)
 			<tr>
 				<th class='align-middle'>{{$day['id']}}</th>
