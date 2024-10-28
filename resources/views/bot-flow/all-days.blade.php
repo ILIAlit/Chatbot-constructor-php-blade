@@ -60,9 +60,8 @@
 					</span>
 				</td>
 				<td class='span2 align-middle'>
-					<span class='w-50 d-inline-block text-truncate'>
-						{{$day['text']}}
-					</span>
+					<button type="button" onclick='getDayMessages({{$day["id"]}});'
+						class="btn btn-primary">Сообщения</button>
 				</td>
 				<td>
 					<button type="button" onclick='clickUpdateButton({{$day["id"]}});'
@@ -124,6 +123,10 @@ const clickNotDisableBotButton = (botId) => {
 
 const clickUpdateButton = (botId) => {
 	window.location.href = `/bot/update-bot/${botId}`;
+}
+
+const getDayMessages = (dayId) => {
+	window.location.href = `/bot-flow/day-messages/${dayId}`;
 }
 
 const clickDeleteButton = function(botId) {

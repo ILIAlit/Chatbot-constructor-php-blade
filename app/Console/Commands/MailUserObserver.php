@@ -35,6 +35,8 @@ class MailUserObserver extends Command
      */
     public function handle()
     {
-       $this->mailUserServices->mailHandler();
+       //$this->mailUserServices->mailHandler();
+       
+       $this->mailUserServices->botFlowMailHandler();
     }
 }

@@ -93,9 +93,17 @@ class BotServices {
 	}
 
 	public function getBotUsersOffset(string $botId, int $offset, int $limit) {
-		$bot = $this->getBotById($botId);
-	    $users = $bot->users()->offset($offset)->limit($limit)->get();
-	    return $users;
+		try {
+			$bot = $this->getBotById($botId);
+			if(!$bot) {
+				return null;
+			}
+			$users = $bot->users()->offset($offset)->limit($limit)->get();
+			return $users;
+		} catch (\Exception $e) {
+			Log::error("Error getting bot users: ". $e->getMessage());
+            return null;
+		}
 	}
 
 	private function registerWebhook(string $token) {

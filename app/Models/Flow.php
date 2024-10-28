@@ -10,9 +10,10 @@ class Flow extends Model
     use HasFactory;
 
     protected $fillable = [
+      'start_date',
       'number',    
       'bot_flow_id',
-      'day'
+      'day',
   ];
 
     public function users()

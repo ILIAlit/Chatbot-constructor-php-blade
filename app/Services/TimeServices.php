@@ -9,6 +9,12 @@ class TimeServices {
 		return new Carbon();
 	}
 
+	public function getServerHoursAndMinutes() {
+		$carbonDateTime = $this->getServerTime();
+
+		return $carbonDateTime->format('H:i');
+	}
+
 	public function getUserTtu(int $pause) {
         $timeNow = $this->getServerTime();
 		return $timeNow->addSeconds($pause);
@@ -35,6 +41,11 @@ class TimeServices {
 		$minutes = (int)$time->minute;
 		$timeNow = $this->getServerTime();
 		return $timeNow->hours($hours)->minutes($minutes)->second(0);
+	}
+
+	public function transformDateToCarbon(int $day, int $month, int $year){
+		$timeNow = $this->getServerTime();
+		return $timeNow->day($day)->month($month)->year($year)->hour(0)->minute(0)->second(0);
 	}
 
 	public function transformToSeconds(int $hours, int $minutes, int $seconds){

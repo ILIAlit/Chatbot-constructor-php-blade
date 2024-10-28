@@ -2,6 +2,8 @@
 
 namespace App\Services\BotFlowServices;
 use App\Models\BotFlow;
+use App\Models\Flow;
+use App\Models\StudentFlow;
 use App\Services\TelegramServices;
 use App\Services\TimeServices;
 use Illuminate\Support\Facades\DB;
@@ -107,6 +109,17 @@ class BotFlowServices {
 		$this->telegramServices->sendMessage($token, $userChatId, 'Регистрация прошла успешно✨');
 
 		return true;
+	}
+
+	public function getUsersOffset(string $flowId, int $offset, int $limit) {
+		try {
+			$users = StudentFlow::where('flow_id', $flowId)->limit($limit)->offset($offset)->get();
+			return $users;
+			
+			} catch (\Exception $e) {
+				Log::error("Error getting users: ". $e->getMessage());
+				return false;
+			}
 	}
 
 	/**

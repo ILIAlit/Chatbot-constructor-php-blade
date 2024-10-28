@@ -10,11 +10,16 @@ class FlowDay extends Model
   protected $fillable = [
     'number',    
     'flow_id',
-    'text'
+    'text',
 ];
 
     public function flow()
     {
       return $this->belongsTo(Flow::class);
+    }
+
+    public function messages()
+    {
+      return $this->hasMany(MessageDaysFlow ::class);
     }
 }

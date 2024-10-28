@@ -16,37 +16,26 @@
 @section('main')
 <div class='container'>
 	<section>
-		<h1 class='pb-5'>Потоки</h1>
-		<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-			data-bs-target=".bd-example-modal-lg">Создать поток</button>
-
+		<h1 class='pb-5'>Сообщения</h1>
+		<button onclick='' type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+			data-bs-target=".bd-example-modal-lg">Добавить сообщение</button>
 
 		<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content p-4">
 					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Создать поток</h5>
+						<h5 class="modal-title" id="exampleModalLabel">Создать день</h5>
 					</div>
-					<form onsubmit='window.loadingTrue()' method='post' action='/flow/create'>
+					<form onsubmit='window.loadingTrue()' method='post' action='/flow-days/create-message'>
 						@csrf
-						<div class="input-group mb-3 d-flex flex-column">
-							<div class='d-flex'>
-
-								<span class="input-group-text" id="basic-addon1">🌟</span>
-								<input value='{{$botId}}' type="number" required name='botId' hidden>
-								<input type="number" required class="form-control p-2" id='number' name='number'
-									placeholder="Номер потока" aria-label="Триггер" aria-describedby="basic-addon1">
-							</div>
-							<div>
-								<span class="input-group-text" id="basic-addon1">Дата старта</span>
-								<input type="number" required class="form-control p-2" id='day' name='day'
-									placeholder="Число" aria-label="Триггер" aria-describedby="basic-addon1">
-								<input type="number" required class="form-control p-2" id='month' name='month'
-									placeholder="Месяц" aria-label="Триггер" aria-describedby="basic-addon1">
-								<input type="number" required class="form-control p-2" id='year' name='year'
-									placeholder="Год" aria-label="Триггер" aria-describedby="basic-addon1">
-							</div>
+						<div class="input-group mb-3 d-flex">
+							<span class="input-group-text" id="basic-addon1">🌟</span>
+							<input value='{{$dayId}}' type="number" required name='dayId' hidden>
+							<input type="time" required class="form-control p-2" id='time' name='time'
+								placeholder="Время отправки" aria-describedby="basic-addon1">
+							<textarea required class="form-control p-2" id='text' name='text' placeholder="Текст"
+								aria-describedby="basic-addon1"></textarea>
 						</div>
 						<div class="modal-footer">
 							<button class="btn btn-primary">Создать</button>
@@ -65,30 +54,18 @@
 		@csrf
 		<table class="table table-hover">
 
-			@foreach ($flows as $flow)
+			@foreach ($messages as $message)
 			<tr>
-				<th class='align-middle'>{{$flow['id']}}</th>
+				<th class='align-middle'>{{$message['id']}}</th>
 				<td class='span2 align-middle'>
 					<span class='w-50 d-inline-block text-truncate'>
-						Номер потока - {{$flow['number']}}
+						Время отправки - {{$message['time_send']}}
 					</span>
 				</td>
-				<td class='span2 align-middle'>
-					<button onclick='getFlowDays({{$flow['id']}})' type="button" class="btn btn-primary"
-						data-flow-id="{{$flow['id']}}">Дни</button>
-				</td>
 				<td>
-					@if (!$flow['id'])
-					<button href='#' class="btn btn-primary"
-						onclick='clickNotDisableBotButton({{$flow["id"]}})'>Включить</button>
-					@else
-					<button href='#' class="btn btn-primary"
-						onclick='clickDisableBotButton({{$flow["id"]}})'>Выключить</button>
-					@endif
-				</td>
-				<td>
-					<button type="button" onclick='clickUpdateButton({{$flow["id"]}});'
-						class="btn btn-primary">Изменить</button>
+					<span class='w-50 d-inline-block text-truncate'>
+						{{$message['text']}}
+					</span>
 				</td>
 			</tr>
 			@endforeach
@@ -148,8 +125,8 @@ const clickUpdateButton = (botId) => {
 	window.location.href = `/bot/update-bot/${botId}`;
 }
 
-const getFlowDays = (flowId) => {
-	window.location.href = `/bot-flow/all-days/${flowId}`;
+const getDayMessages = (dayId) => {
+	window.location.href = `/bot/update-bot/${dayId}`;
 }
 
 const clickDeleteButton = function(botId) {

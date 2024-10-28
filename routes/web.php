@@ -66,6 +66,8 @@ Route::delete('/user/delete/{userId}', [UserController::class, 'deleteUser'])->n
 Route::post('/bot-flow/create', [BotFlowController::class, 'create']);
 Route::post('/flow/create', [FlowController::class, 'create']);
 Route::post('/flow-days/create', [DaysController::class, 'create']);
+Route::post('/flow-days/create-message', [DaysController::class, 'createMessage']);
+
 
 
 Route::get('/bot-flow/create', function () {
@@ -74,6 +76,7 @@ Route::get('/bot-flow/create', function () {
 Route::get('/bot-flow/get-all', [BotFlowController::class, 'getAll'])->name('bot-flow/get-all');
 Route::get('/bot-flow/get-all-flow/{botId}', [FlowController::class, 'getBotFlow'])->name('bot-flow/get-all-flow');
 Route::get('/bot-flow/all-days/{flowId}', [DaysController::class, 'getFlowDays'])->name('bot-flow/all-days');
+Route::get('/bot-flow/day-messages/{dayId}', [DaysController::class, 'getFlowDayMessages'])->name('bot-flow/day-messages');
 
 Route::get('/bot-flow/get-web-hook-data', function() {
     dd(Cache::get('webhook-data'));
