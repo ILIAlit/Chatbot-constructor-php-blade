@@ -3,6 +3,7 @@
 namespace App\Services;
 use App\Models\BotFlow;
 use App\Models\Flow;
+use App\Models\MailFlowStudentsModel;
 use App\Models\MailUserModel;
 use App\Services\BotFlowServices\BotFlowServices;
 use Illuminate\Support\Facades\Log;
@@ -30,6 +31,15 @@ class MailUserServices {
         return $mailUser;
 	}
 
+	public function createFlowMail(int $flowId, $text, $filePath = null) {
+		$mailFlowUser = new MailFlowStudentsModel();
+        $mailFlowUser->flow_id = $flowId;
+        $mailFlowUser->text = $text;
+        $mailFlowUser->file_path = $filePath;
+        $mailFlowUser->save();
+		return $mailFlowUser;
+	}
+
 	public function mailHandler() {
 		$limit = env('MAIL_USER_LIMIT');
 		$mail = MailUserModel::where('succeeded', 0)->first();
@@ -51,7 +61,11 @@ class MailUserServices {
 		$bot = $this->botServices->getBotById($mail->bot_id);
 
 		foreach ($users as $user) {
-			$this->telegramServices->sendContent($bot->token, $user->tg_chat_id, $mail->imagePath, $mail->text);
+			$res = $this->telegramServices->sendContent($bot->token, $user->tg_chat_id, $mail->imagePath, $mail->text);
+			if(isset($res['ok']) ) {
+				$mail->user_count += 1;
+			}
+
 			
 		}
 
@@ -60,15 +74,14 @@ class MailUserServices {
 		$mail->save();
 	}
 
-	public function botFlowMailHandler() {
+	public function flowMailHandler() {
 		$limit = env('MAIL_USER_LIMIT');
-		$mail = MailUserModel::where('succeeded', 0)->first();
+		$mail = MailFlowStudentsModel::where('succeeded', 0)->first();
 		if (!$mail) {
             return;
         }
 		$offset = $mail->offset;
-		$users = $this->botFlowServices->getUsersOffset($mail->bot_id, $offset, $limit);
-		Log::info(json_decode($users));
+		$users = $this->botFlowServices->getUsersOffset($mail->flow_id, $offset, $limit);
 		if(!$users) {
             return;
         }
@@ -84,7 +97,10 @@ class MailUserServices {
         ])->first();
 
 		foreach ($users as $user) {
-			$this->telegramServices->sendContent($bot->token, $user->chat_id, $mail->imagePath, $mail->text);
+			$res = $this->telegramServices->sendContent($bot->token, $user->chat_id, $mail->imagePath, $mail->text);
+			if(isset($res['ok'])) {
+				$mail->user_count += 1;
+			}
 			
 		}
 

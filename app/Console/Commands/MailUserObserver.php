@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\MailUserServices;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class MailUserObserver extends Command
 {
@@ -35,8 +36,7 @@ class MailUserObserver extends Command
      */
     public function handle()
     {
-       //$this->mailUserServices->mailHandler();
-       
-       $this->mailUserServices->botFlowMailHandler();
+       $this->mailUserServices->mailHandler();
+       $this->mailUserServices->flowMailHandler();
     }
 }

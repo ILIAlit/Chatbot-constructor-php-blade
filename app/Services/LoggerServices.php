@@ -21,6 +21,11 @@ class LoggerServices {
 		Log::channel('tg_message')->info($formattedMessage);
 	}
 
+    public function tgLogError($error) {
+		$timeNow = $this->timeService->getServerTime();
+		Log::channel('tg_error')->error($error);
+	}
+
 	public function showLogs()
     {
         $logFilePath = storage_path('logs/tg_message.log');

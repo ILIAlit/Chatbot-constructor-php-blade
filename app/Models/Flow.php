@@ -23,7 +23,7 @@ class Flow extends Model
 
     public function bot()
     {
-      return $this->belongsTo(BotFlow::class);
+      return $this->belongsTo(BotFlow::class, 'bot_flow_id');
     }
 
     public function flowDays()

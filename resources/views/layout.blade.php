@@ -158,10 +158,26 @@ body {
 							</ul>
 						</li>
 						<li>
-							<a href="/state-user-create" class="nav-link px-0 align-middle ">
+							<a href="#submenu5" data-bs-toggle="collapse" class="nav-link px-0 align-middle ">
 								<i class="fs-4 bi-bootstrap"></i> <span
-									class="ms-1 h5 d-none d-sm-inline">Статистика</span>
-							</a>
+									class="ms-1 h5 d-none d-sm-inline">Статистика</span></a>
+							<ul class="collapse nav flex-column ms-1" id="submenu5" data-bs-parent="#menu">
+								<li class="w-100">
+									<a href="/state-user-create" class="nav-link px-0 align-middle ">
+										<span class="d-none d-sm-inline text-black">Статистика по ботам вебинара</span>
+									</a>
+								</li>
+								<li class="w-100">
+									<a href="/state-flow" class="nav-link px-0 align-middle ">
+										<span class="d-none d-sm-inline text-black">Статистика по ботам потоков</span>
+									</a>
+								</li>
+								<li class="w-100">
+									<a href="/state-mail" class="nav-link px-0"> <span
+											class="d-none d-sm-inline text-black">Статистика рассылок</span>
+									</a>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</div>

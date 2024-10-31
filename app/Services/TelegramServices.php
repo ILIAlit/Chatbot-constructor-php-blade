@@ -42,6 +42,7 @@ class TelegramServices {
 		}
 		catch (\Exception $e) {
             Log::error('Error sending message content to Telegram: '. $e->getMessage());
+			$this->logger->tgLogError($e->getMessage());
         }
 	}
 
@@ -76,6 +77,13 @@ class TelegramServices {
 		curl_close($ch);
 		//$this->messageLogger($response, $text);
 	}
+
+	/**
+	 * @param $botToken
+	 * @param $chatId
+	 * @param $message
+	 * @return mixed
+	 */
 	
 	public function sendMessage($botToken, $chatId, $message) {
 		try {
@@ -88,10 +96,12 @@ class TelegramServices {
 				],
 			]);
 			$this->messageLogger($response, $message);
-			return $response;
+			Log::info(json_decode($response->getBody(), true));
+			return json_decode($response->getBody(), true);
 		}
 		catch (\Exception $e) {
             Log::error('Telegram sendMessage error: '. $e->getMessage());
+			$this->logger->tgLogError($e->getMessage());
         }
 		
 	}

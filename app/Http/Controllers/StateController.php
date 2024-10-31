@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Flow;
+use App\Models\MailFlowStudentsModel;
+use App\Models\MailUserModel;
+use App\Models\StudentFlow;
 use App\Services\BotServices;
 use App\Services\UserServices;
 use Carbon\Carbon;
@@ -69,5 +73,36 @@ class StateController extends Controller
 
 		
 		return view('state/state', $responseData);
+	}
+
+	public function getMailStatistics(Request $request) {
+
+		$userMail = MailUserModel::all();
+		$userFlowMail = MailFlowStudentsModel::all();
+		
+		
+		return view('state/mail-state', ['userMail' => $userMail, 'userFlowMail' => $userFlowMail]);
+	}
+
+	public function getFlowStatistics(Request $request) {
+
+		$flows = Flow::with('bot')->get();
+
+		
+
+		$flowsGroupedByBotName = $flows->groupBy(function ($flow) {
+			return $flow->bot->name;
+		});
+
+		Log::info(json_decode($flowsGroupedByBotName, true));
+	
+		return view('state/flow-state/flow-state', ['botFlows' => $flowsGroupedByBotName]);
+	}
+
+	public function getFlowUsers(Request $request, string $flowId) {
+	
+		$users = StudentFlow::where('flow_id', $flowId)->get();
+
+		return view('state/flow-state/users', ['users' => $users]);
 	}
 }

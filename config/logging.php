@@ -64,6 +64,12 @@ return [
          'level' => 'debug',
      ],
 
+     'tg_error' => [
+         'driver' => 'single',
+         'path' => storage_path('logs/tg_error.log'),
+         'level' => 'debug',
+     ],
+
         'efficiency_log' => [
             'driver' => 'single',
             'path' => storage_path('logs/efficiency.log'),

@@ -55,6 +55,9 @@ Route::patch('/bot/updateBotWebHook/{id}', [BotController::class, 'updateBotWebH
 
 
 Route::get('/state-user-create', [StateController::class, 'getUsersCreateStatistics'])->name('state-user-create');
+Route::get('/state-mail', [StateController::class, 'getMailStatistics'])->name('state-mail');
+Route::get('/state-flow', [StateController::class, 'getFlowStatistics'])->name('state-flow');
+Route::get('/state-flow/users/{flowId}', [StateController::class, 'getFlowUsers'])->name('state-users');
 
 
 Route::delete('/user/delete/{userId}', [UserController::class, 'deleteUser'])->name('delete-user');
