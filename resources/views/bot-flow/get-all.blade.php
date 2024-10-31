@@ -17,7 +17,7 @@
 <div class='container'>
 	<section>
 		<h1 class='pb-5'>Мои боты (потоки)</h1>
-		
+
 		@csrf
 		<table class="table table-hover">
 
@@ -36,7 +36,7 @@
 				</td>
 				<td>
 					@if (!$bot['id'])
-					<button href='#' class="btn btn-primary"
+					<button class='' href='#' class="btn btn-primary"
 						onclick='clickNotDisableBotButton({{$bot["id"]}})'>Включить</button>
 					@else
 					<button href='#' class="btn btn-primary"
@@ -47,7 +47,7 @@
 					<button type="button" onclick='clickUpdateButton({{$bot["id"]}});'
 						class="btn btn-primary">Изменить</button>
 				</td>
-				<!--<td>
+				<td>
 					<div class="dropdown">
 						<button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenu2"
 							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -58,7 +58,7 @@
 								class="btn btn-danger">Удалить</a>
 						</div>
 					</div>
-				</td>-->
+				</td>
 			</tr>
 			@endforeach
 		</table>
@@ -124,7 +124,7 @@ const clickGetFlows = (botId) => {
 const clickDeleteButton = function(botId) {
 	if (window.confirm('Удалить бота?')) {
 		window.loadingTrue()
-		fetch(`/bot/delete-bot/${botId}`, {
+		fetch(`/bot-flow/delete/${botId}`, {
 			method: 'DELETE',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',

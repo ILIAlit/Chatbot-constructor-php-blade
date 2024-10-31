@@ -67,6 +67,7 @@ Route::delete('/user/delete/{userId}', [UserController::class, 'deleteUser'])->n
 
 
 Route::post('/bot-flow/create', [BotFlowController::class, 'create']);
+Route::delete('/bot-flow/delete/{id}', [BotFlowController::class, 'delete']);
 Route::post('/flow/create', [FlowController::class, 'create']);
 Route::post('/flow-days/create', [DaysController::class, 'create']);
 Route::post('/flow-days/create-message', [DaysController::class, 'createMessage']);

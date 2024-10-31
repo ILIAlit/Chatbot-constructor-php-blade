@@ -47,5 +47,17 @@ class BotFlowController extends Controller
         return view('bot-flow/get-all', ['bots' => $responseBots]);
     }
 
+    public function delete(Request $request, $id) {
+        $bot = BotFlow::find($id)->first();
+        $this->botFlowServices->unRegisterWebhook($bot->token);
+        if ($bot) {
+            $bot->delete();
+            
+        } else {
+            Log::error('Bot not found: '. $id);
+            return redirect()->route('home');
+        }
+    }
+
     
 }

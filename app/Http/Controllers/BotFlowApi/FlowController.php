@@ -51,4 +51,11 @@ class FlowController extends Controller
         );
         return view('bot-flow/get-all-flow', ['flows' => $flows, 'botId' => $botId]);
     }
+
+    public function delete($id) {
+        $flow = Flow::find($id);
+        $botId = $flow->bot_flow_id;
+        $flow->delete();
+        return redirect()->route("bot-flow/get-all-flow", ['botId' => $botId]);
+    }
 }

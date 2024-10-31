@@ -105,6 +105,7 @@ class BotController extends Controller
     }
 
     public function deleteBot(Request $request, string $botId) {
+        
         $this->botService->deleteBot($botId);
     }
 

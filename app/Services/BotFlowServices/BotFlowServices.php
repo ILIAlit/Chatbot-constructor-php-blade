@@ -159,4 +159,17 @@ class BotFlowServices {
 	   $resultQuery = curl_exec($ch);
 	   curl_close($ch);
 	}
+
+	public function unRegisterWebhook(string $token) {
+		$getQuery = array(
+            "url" => env('APP_URL')."/telegraph/$token/webhook",
+        );
+        $ch = curl_init("https://api.telegram.org/bot". $token ."/setWebhook?" . http_build_query($getQuery));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        
+        $resultQuery = curl_exec($ch);
+        curl_close($ch);
+	}
 }
